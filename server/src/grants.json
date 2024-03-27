@@ -121,31 +121,31 @@
   },
   {
     "role": "user",
-    "resource": "Product",
+    "resource": "Apparel",
     "action": "read:own",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Product",
+    "resource": "Apparel",
     "action": "create:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Product",
+    "resource": "Apparel",
     "action": "update:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Product",
+    "resource": "Apparel",
     "action": "delete:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Product",
+    "resource": "Apparel",
     "action": "read:any",
     "attributes": "*"
   }
