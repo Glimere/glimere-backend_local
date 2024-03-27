@@ -14,7 +14,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { CustomerWhereUniqueInput } from "../../customer/base/CustomerWhereUniqueInput";
 import { ValidateNested, IsOptional, IsNumber, IsInt } from "class-validator";
 import { Type } from "class-transformer";
-import { ProductWhereUniqueInput } from "../../product/base/ProductWhereUniqueInput";
+import { ApparelWhereUniqueInput } from "../../apparel/base/ApparelWhereUniqueInput";
 
 @InputType()
 class OrderCreateInput {
@@ -43,15 +43,15 @@ class OrderCreateInput {
 
   @ApiProperty({
     required: false,
-    type: () => ProductWhereUniqueInput,
+    type: () => ApparelWhereUniqueInput,
   })
   @ValidateNested()
-  @Type(() => ProductWhereUniqueInput)
+  @Type(() => ApparelWhereUniqueInput)
   @IsOptional()
-  @Field(() => ProductWhereUniqueInput, {
+  @Field(() => ApparelWhereUniqueInput, {
     nullable: true,
   })
-  product?: ProductWhereUniqueInput | null;
+  product?: ApparelWhereUniqueInput | null;
 
   @ApiProperty({
     required: false,

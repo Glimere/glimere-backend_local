@@ -1,10 +1,10 @@
 import { CustomerWhereUniqueInput } from "../customer/CustomerWhereUniqueInput";
-import { ProductWhereUniqueInput } from "../product/ProductWhereUniqueInput";
+import { ApparelWhereUniqueInput } from "../apparel/ApparelWhereUniqueInput";
 
 export type OrderCreateInput = {
   customer?: CustomerWhereUniqueInput | null;
   discount?: number | null;
-  product?: ProductWhereUniqueInput | null;
+  product?: ApparelWhereUniqueInput | null;
   quantity?: number | null;
   totalPrice?: number | null;
 };
