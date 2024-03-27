@@ -21,10 +21,10 @@ import { AddressList } from "./address/AddressList";
 import { AddressCreate } from "./address/AddressCreate";
 import { AddressEdit } from "./address/AddressEdit";
 import { AddressShow } from "./address/AddressShow";
-import { ProductList } from "./product/ProductList";
-import { ProductCreate } from "./product/ProductCreate";
-import { ProductEdit } from "./product/ProductEdit";
-import { ProductShow } from "./product/ProductShow";
+import { ApparelList } from "./apparel/ApparelList";
+import { ApparelCreate } from "./apparel/ApparelCreate";
+import { ApparelEdit } from "./apparel/ApparelEdit";
+import { ApparelShow } from "./apparel/ApparelShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -80,11 +80,11 @@ const App = (): React.ReactElement => {
           show={AddressShow}
         />
         <Resource
-          name="Product"
-          list={ProductList}
-          edit={ProductEdit}
-          create={ProductCreate}
-          show={ProductShow}
+          name="Apparel"
+          list={ApparelList}
+          edit={ApparelEdit}
+          create={ApparelCreate}
+          show={ApparelShow}
         />
       </Admin>
     </div>
