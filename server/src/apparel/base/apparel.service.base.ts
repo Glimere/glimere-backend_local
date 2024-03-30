@@ -14,7 +14,17 @@ import { PrismaService } from "../../prisma/prisma.service";
 import {
   Prisma,
   Apparel, // @ts-ignore
-  Order,
+  Material, // @ts-ignore
+  Model, // @ts-ignore
+  Review, // @ts-ignore
+  Size, // @ts-ignore
+  SubCategory, // @ts-ignore
+  SubSubcategory, // @ts-ignore
+  ApparelType, // @ts-ignore
+  Brand, // @ts-ignore
+  CartItem, // @ts-ignore
+  MainCategory, // @ts-ignore
+  WishlistItems,
 } from "@prisma/client";
 
 export class ApparelServiceBase {
@@ -52,14 +62,109 @@ export class ApparelServiceBase {
     return this.prisma.apparel.delete(args);
   }
 
-  async findOrders(
+  async findMaterials(
     parentId: string,
-    args: Prisma.OrderFindManyArgs
-  ): Promise<Order[]> {
+    args: Prisma.MaterialFindManyArgs
+  ): Promise<Material[]> {
     return this.prisma.apparel
       .findUniqueOrThrow({
         where: { id: parentId },
       })
-      .orders(args);
+      .materials(args);
+  }
+
+  async findModels(
+    parentId: string,
+    args: Prisma.ModelFindManyArgs
+  ): Promise<Model[]> {
+    return this.prisma.apparel
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .models(args);
+  }
+
+  async findReviews(
+    parentId: string,
+    args: Prisma.ReviewFindManyArgs
+  ): Promise<Review[]> {
+    return this.prisma.apparel
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .reviews(args);
+  }
+
+  async findSizes(
+    parentId: string,
+    args: Prisma.SizeFindManyArgs
+  ): Promise<Size[]> {
+    return this.prisma.apparel
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .sizes(args);
+  }
+
+  async findSubCategories(
+    parentId: string,
+    args: Prisma.SubCategoryFindManyArgs
+  ): Promise<SubCategory[]> {
+    return this.prisma.apparel
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .subCategories(args);
+  }
+
+  async findSubSubcategories(
+    parentId: string,
+    args: Prisma.SubSubcategoryFindManyArgs
+  ): Promise<SubSubcategory[]> {
+    return this.prisma.apparel
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .subSubcategories(args);
+  }
+
+  async getApparelType(parentId: string): Promise<ApparelType | null> {
+    return this.prisma.apparel
+      .findUnique({
+        where: { id: parentId },
+      })
+      .apparelType();
+  }
+
+  async getBrand(parentId: string): Promise<Brand | null> {
+    return this.prisma.apparel
+      .findUnique({
+        where: { id: parentId },
+      })
+      .brand();
+  }
+
+  async getCartItem(parentId: string): Promise<CartItem | null> {
+    return this.prisma.apparel
+      .findUnique({
+        where: { id: parentId },
+      })
+      .cartItem();
+  }
+
+  async getMainCategory(parentId: string): Promise<MainCategory | null> {
+    return this.prisma.apparel
+      .findUnique({
+        where: { id: parentId },
+      })
+      .mainCategory();
+  }
+
+  async getWishlistItems(parentId: string): Promise<WishlistItems | null> {
+    return this.prisma.apparel
+      .findUnique({
+        where: { id: parentId },
+      })
+      .wishlistItems();
   }
 }

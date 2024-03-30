@@ -11,13 +11,45 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CardCreateNestedManyWithoutUsersInput } from "./CardCreateNestedManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { CartCreateNestedManyWithoutUsersInput } from "./CartCreateNestedManyWithoutUsersInput";
+import { FollowingCreateNestedManyWithoutUsersInput } from "./FollowingCreateNestedManyWithoutUsersInput";
+import { ReviewCreateNestedManyWithoutUsersInput } from "./ReviewCreateNestedManyWithoutUsersInput";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { ShippingAddressCreateNestedManyWithoutUsersInput } from "./ShippingAddressCreateNestedManyWithoutUsersInput";
+import { SizeCreateNestedManyWithoutUsersInput } from "./SizeCreateNestedManyWithoutUsersInput";
+import { WishlistCreateNestedManyWithoutUsersInput } from "./WishlistCreateNestedManyWithoutUsersInput";
 
 @InputType()
 class UserCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CardCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CardCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CardCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  cards?: CardCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => CartCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CartCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CartCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  carts?: CartCreateNestedManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -28,6 +60,18 @@ class UserCreateInput {
     nullable: true,
   })
   firstName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => FollowingCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => FollowingCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => FollowingCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  followings?: FollowingCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
@@ -49,11 +93,47 @@ class UserCreateInput {
   password!: string;
 
   @ApiProperty({
+    required: false,
+    type: () => ReviewCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ReviewCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ReviewCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  reviews?: ReviewCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
     required: true,
   })
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => ShippingAddressCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ShippingAddressCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ShippingAddressCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  shippingAddress?: ShippingAddressCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SizeCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => SizeCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => SizeCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  sizes?: SizeCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: true,
@@ -62,6 +142,18 @@ class UserCreateInput {
   @IsString()
   @Field(() => String)
   username!: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => WishlistCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => WishlistCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => WishlistCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  wishlists?: WishlistCreateNestedManyWithoutUsersInput;
 }
 
 export { UserCreateInput as UserCreateInput };

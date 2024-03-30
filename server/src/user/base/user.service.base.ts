@@ -10,7 +10,19 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, User } from "@prisma/client";
+
+import {
+  Prisma,
+  User, // @ts-ignore
+  Card, // @ts-ignore
+  Cart, // @ts-ignore
+  Following, // @ts-ignore
+  Review, // @ts-ignore
+  ShippingAddress, // @ts-ignore
+  Size, // @ts-ignore
+  Wishlist,
+} from "@prisma/client";
+
 import { PasswordService } from "../../auth/password.service";
 import { transformStringFieldUpdateInput } from "../../prisma.util";
 
@@ -70,5 +82,82 @@ export class UserServiceBase {
     args: Prisma.SelectSubset<T, Prisma.UserDeleteArgs>
   ): Promise<User> {
     return this.prisma.user.delete(args);
+  }
+
+  async findCards(
+    parentId: string,
+    args: Prisma.CardFindManyArgs
+  ): Promise<Card[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .cards(args);
+  }
+
+  async findCarts(
+    parentId: string,
+    args: Prisma.CartFindManyArgs
+  ): Promise<Cart[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .carts(args);
+  }
+
+  async findFollowings(
+    parentId: string,
+    args: Prisma.FollowingFindManyArgs
+  ): Promise<Following[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .followings(args);
+  }
+
+  async findReviews(
+    parentId: string,
+    args: Prisma.ReviewFindManyArgs
+  ): Promise<Review[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .reviews(args);
+  }
+
+  async findShippingAddress(
+    parentId: string,
+    args: Prisma.ShippingAddressFindManyArgs
+  ): Promise<ShippingAddress[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .shippingAddress(args);
+  }
+
+  async findSizes(
+    parentId: string,
+    args: Prisma.SizeFindManyArgs
+  ): Promise<Size[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .sizes(args);
+  }
+
+  async findWishlists(
+    parentId: string,
+    args: Prisma.WishlistFindManyArgs
+  ): Promise<Wishlist[]> {
+    return this.prisma.user
+      .findUniqueOrThrow({
+        where: { id: parentId },
+      })
+      .wishlists(args);
   }
 }

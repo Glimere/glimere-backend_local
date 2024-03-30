@@ -21,7 +21,6 @@ import {
 } from "class-validator";
 import { Type } from "class-transformer";
 import { Customer } from "../../customer/base/Customer";
-import { Apparel } from "../../apparel/base/Apparel";
 
 @ObjectType()
 class Order {
@@ -60,15 +59,6 @@ class Order {
   @IsString()
   @Field(() => String)
   id!: string;
-
-  @ApiProperty({
-    required: false,
-    type: () => Apparel,
-  })
-  @ValidateNested()
-  @Type(() => Apparel)
-  @IsOptional()
-  product?: Apparel | null;
 
   @ApiProperty({
     required: false,

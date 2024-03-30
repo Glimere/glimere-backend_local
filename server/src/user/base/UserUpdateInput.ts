@@ -11,13 +11,45 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CardUpdateManyWithoutUsersInput } from "./CardUpdateManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { CartUpdateManyWithoutUsersInput } from "./CartUpdateManyWithoutUsersInput";
+import { FollowingUpdateManyWithoutUsersInput } from "./FollowingUpdateManyWithoutUsersInput";
+import { ReviewUpdateManyWithoutUsersInput } from "./ReviewUpdateManyWithoutUsersInput";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { ShippingAddressUpdateManyWithoutUsersInput } from "./ShippingAddressUpdateManyWithoutUsersInput";
+import { SizeUpdateManyWithoutUsersInput } from "./SizeUpdateManyWithoutUsersInput";
+import { WishlistUpdateManyWithoutUsersInput } from "./WishlistUpdateManyWithoutUsersInput";
 
 @InputType()
 class UserUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CardUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CardUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CardUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  cards?: CardUpdateManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => CartUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CartUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CartUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  carts?: CartUpdateManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -28,6 +60,18 @@ class UserUpdateInput {
     nullable: true,
   })
   firstName?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => FollowingUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => FollowingUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => FollowingUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  followings?: FollowingUpdateManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
@@ -53,6 +97,18 @@ class UserUpdateInput {
 
   @ApiProperty({
     required: false,
+    type: () => ReviewUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ReviewUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ReviewUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  reviews?: ReviewUpdateManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
   })
   @IsJSONValue()
   @IsOptional()
@@ -60,6 +116,30 @@ class UserUpdateInput {
     nullable: true,
   })
   roles?: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => ShippingAddressUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ShippingAddressUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ShippingAddressUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  shippingAddress?: ShippingAddressUpdateManyWithoutUsersInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SizeUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => SizeUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => SizeUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  sizes?: SizeUpdateManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,
@@ -71,6 +151,18 @@ class UserUpdateInput {
     nullable: true,
   })
   username?: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => WishlistUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => WishlistUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => WishlistUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  wishlists?: WishlistUpdateManyWithoutUsersInput;
 }
 
 export { UserUpdateInput as UserUpdateInput };

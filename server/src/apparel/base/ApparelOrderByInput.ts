@@ -28,6 +28,72 @@ class ApparelOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  apparelDesc?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  apparelName?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  apparelPrice?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  apparelTypeId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  brandId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  cartItemId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   createdAt?: SortOrder;
 
   @ApiProperty({
@@ -39,7 +105,40 @@ class ApparelOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-  description?: SortOrder;
+  discountedPrice?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  discountEndDate?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  discountPercentage?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  discountStartDate?: SortOrder;
 
   @ApiProperty({
     required: false,
@@ -61,7 +160,7 @@ class ApparelOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-  itemPrice?: SortOrder;
+  isDiscounted?: SortOrder;
 
   @ApiProperty({
     required: false,
@@ -72,7 +171,7 @@ class ApparelOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-  name?: SortOrder;
+  mainCategoryId?: SortOrder;
 
   @ApiProperty({
     required: false,
@@ -84,6 +183,17 @@ class ApparelOrderByInput {
     nullable: true,
   })
   updatedAt?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  wishlistItemsId?: SortOrder;
 }
 
 export { ApparelOrderByInput as ApparelOrderByInput };

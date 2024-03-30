@@ -11,14 +11,39 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, IsOptional } from "class-validator";
+import { Card } from "../../card/base/Card";
+import { ValidateNested, IsOptional, IsDate, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { Cart } from "../../cart/base/Cart";
+import { Following } from "../../following/base/Following";
+import { Review } from "../../review/base/Review";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { JsonValue } from "type-fest";
+import { ShippingAddress } from "../../shippingAddress/base/ShippingAddress";
+import { Size } from "../../size/base/Size";
+import { Wishlist } from "../../wishlist/base/Wishlist";
 
 @ObjectType()
 class User {
+  @ApiProperty({
+    required: false,
+    type: () => [Card],
+  })
+  @ValidateNested()
+  @Type(() => Card)
+  @IsOptional()
+  cards?: Array<Card>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Cart],
+  })
+  @ValidateNested()
+  @Type(() => Cart)
+  @IsOptional()
+  carts?: Array<Cart>;
+
   @ApiProperty({
     required: true,
   })
@@ -37,6 +62,15 @@ class User {
     nullable: true,
   })
   firstName!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Following],
+  })
+  @ValidateNested()
+  @Type(() => Following)
+  @IsOptional()
+  followings?: Array<Following>;
 
   @ApiProperty({
     required: true,
@@ -58,11 +92,38 @@ class User {
   lastName!: string | null;
 
   @ApiProperty({
+    required: false,
+    type: () => [Review],
+  })
+  @ValidateNested()
+  @Type(() => Review)
+  @IsOptional()
+  reviews?: Array<Review>;
+
+  @ApiProperty({
     required: true,
   })
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: JsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => [ShippingAddress],
+  })
+  @ValidateNested()
+  @Type(() => ShippingAddress)
+  @IsOptional()
+  shippingAddress?: Array<ShippingAddress>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Size],
+  })
+  @ValidateNested()
+  @Type(() => Size)
+  @IsOptional()
+  sizes?: Array<Size>;
 
   @ApiProperty({
     required: true,
@@ -79,6 +140,15 @@ class User {
   @IsString()
   @Field(() => String)
   username!: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Wishlist],
+  })
+  @ValidateNested()
+  @Type(() => Wishlist)
+  @IsOptional()
+  wishlists?: Array<Wishlist>;
 }
 
 export { User as User };

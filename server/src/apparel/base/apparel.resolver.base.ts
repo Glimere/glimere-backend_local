@@ -26,8 +26,23 @@ import { ApparelFindUniqueArgs } from "./ApparelFindUniqueArgs";
 import { CreateApparelArgs } from "./CreateApparelArgs";
 import { UpdateApparelArgs } from "./UpdateApparelArgs";
 import { DeleteApparelArgs } from "./DeleteApparelArgs";
-import { OrderFindManyArgs } from "../../order/base/OrderFindManyArgs";
-import { Order } from "../../order/base/Order";
+import { MaterialFindManyArgs } from "../../material/base/MaterialFindManyArgs";
+import { Material } from "../../material/base/Material";
+import { ModelFindManyArgs } from "../../model/base/ModelFindManyArgs";
+import { Model } from "../../model/base/Model";
+import { ReviewFindManyArgs } from "../../review/base/ReviewFindManyArgs";
+import { Review } from "../../review/base/Review";
+import { SizeFindManyArgs } from "../../size/base/SizeFindManyArgs";
+import { Size } from "../../size/base/Size";
+import { SubCategoryFindManyArgs } from "../../subCategory/base/SubCategoryFindManyArgs";
+import { SubCategory } from "../../subCategory/base/SubCategory";
+import { SubSubcategoryFindManyArgs } from "../../subSubcategory/base/SubSubcategoryFindManyArgs";
+import { SubSubcategory } from "../../subSubcategory/base/SubSubcategory";
+import { ApparelType } from "../../apparelType/base/ApparelType";
+import { Brand } from "../../brand/base/Brand";
+import { CartItem } from "../../cartItem/base/CartItem";
+import { MainCategory } from "../../mainCategory/base/MainCategory";
+import { WishlistItems } from "../../wishlistItems/base/WishlistItems";
 import { ApparelService } from "../apparel.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Apparel)
@@ -94,7 +109,39 @@ export class ApparelResolverBase {
   ): Promise<Apparel> {
     return await this.service.createApparel({
       ...args,
-      data: args.data,
+      data: {
+        ...args.data,
+
+        apparelType: args.data.apparelType
+          ? {
+              connect: args.data.apparelType,
+            }
+          : undefined,
+
+        brand: args.data.brand
+          ? {
+              connect: args.data.brand,
+            }
+          : undefined,
+
+        cartItem: args.data.cartItem
+          ? {
+              connect: args.data.cartItem,
+            }
+          : undefined,
+
+        mainCategory: args.data.mainCategory
+          ? {
+              connect: args.data.mainCategory,
+            }
+          : undefined,
+
+        wishlistItems: args.data.wishlistItems
+          ? {
+              connect: args.data.wishlistItems,
+            }
+          : undefined,
+      },
     });
   }
 
@@ -111,7 +158,39 @@ export class ApparelResolverBase {
     try {
       return await this.service.updateApparel({
         ...args,
-        data: args.data,
+        data: {
+          ...args.data,
+
+          apparelType: args.data.apparelType
+            ? {
+                connect: args.data.apparelType,
+              }
+            : undefined,
+
+          brand: args.data.brand
+            ? {
+                connect: args.data.brand,
+              }
+            : undefined,
+
+          cartItem: args.data.cartItem
+            ? {
+                connect: args.data.cartItem,
+              }
+            : undefined,
+
+          mainCategory: args.data.mainCategory
+            ? {
+                connect: args.data.mainCategory,
+              }
+            : undefined,
+
+          wishlistItems: args.data.wishlistItems
+            ? {
+                connect: args.data.wishlistItems,
+              }
+            : undefined,
+        },
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
@@ -145,22 +224,225 @@ export class ApparelResolverBase {
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
-  @graphql.ResolveField(() => [Order], { name: "orders" })
+  @graphql.ResolveField(() => [Material], { name: "materials" })
   @nestAccessControl.UseRoles({
-    resource: "Order",
+    resource: "Material",
     action: "read",
     possession: "any",
   })
-  async findOrders(
+  async findMaterials(
     @graphql.Parent() parent: Apparel,
-    @graphql.Args() args: OrderFindManyArgs
-  ): Promise<Order[]> {
-    const results = await this.service.findOrders(parent.id, args);
+    @graphql.Args() args: MaterialFindManyArgs
+  ): Promise<Material[]> {
+    const results = await this.service.findMaterials(parent.id, args);
 
     if (!results) {
       return [];
     }
 
     return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Model], { name: "models" })
+  @nestAccessControl.UseRoles({
+    resource: "Model",
+    action: "read",
+    possession: "any",
+  })
+  async findModels(
+    @graphql.Parent() parent: Apparel,
+    @graphql.Args() args: ModelFindManyArgs
+  ): Promise<Model[]> {
+    const results = await this.service.findModels(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Review], { name: "reviews" })
+  @nestAccessControl.UseRoles({
+    resource: "Review",
+    action: "read",
+    possession: "any",
+  })
+  async findReviews(
+    @graphql.Parent() parent: Apparel,
+    @graphql.Args() args: ReviewFindManyArgs
+  ): Promise<Review[]> {
+    const results = await this.service.findReviews(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Size], { name: "sizes" })
+  @nestAccessControl.UseRoles({
+    resource: "Size",
+    action: "read",
+    possession: "any",
+  })
+  async findSizes(
+    @graphql.Parent() parent: Apparel,
+    @graphql.Args() args: SizeFindManyArgs
+  ): Promise<Size[]> {
+    const results = await this.service.findSizes(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [SubCategory], { name: "subCategories" })
+  @nestAccessControl.UseRoles({
+    resource: "SubCategory",
+    action: "read",
+    possession: "any",
+  })
+  async findSubCategories(
+    @graphql.Parent() parent: Apparel,
+    @graphql.Args() args: SubCategoryFindManyArgs
+  ): Promise<SubCategory[]> {
+    const results = await this.service.findSubCategories(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [SubSubcategory], { name: "subSubcategories" })
+  @nestAccessControl.UseRoles({
+    resource: "SubSubcategory",
+    action: "read",
+    possession: "any",
+  })
+  async findSubSubcategories(
+    @graphql.Parent() parent: Apparel,
+    @graphql.Args() args: SubSubcategoryFindManyArgs
+  ): Promise<SubSubcategory[]> {
+    const results = await this.service.findSubSubcategories(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => ApparelType, {
+    nullable: true,
+    name: "apparelType",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "ApparelType",
+    action: "read",
+    possession: "any",
+  })
+  async getApparelType(
+    @graphql.Parent() parent: Apparel
+  ): Promise<ApparelType | null> {
+    const result = await this.service.getApparelType(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => Brand, {
+    nullable: true,
+    name: "brand",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "Brand",
+    action: "read",
+    possession: "any",
+  })
+  async getBrand(@graphql.Parent() parent: Apparel): Promise<Brand | null> {
+    const result = await this.service.getBrand(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => CartItem, {
+    nullable: true,
+    name: "cartItem",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "CartItem",
+    action: "read",
+    possession: "any",
+  })
+  async getCartItem(
+    @graphql.Parent() parent: Apparel
+  ): Promise<CartItem | null> {
+    const result = await this.service.getCartItem(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => MainCategory, {
+    nullable: true,
+    name: "mainCategory",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "MainCategory",
+    action: "read",
+    possession: "any",
+  })
+  async getMainCategory(
+    @graphql.Parent() parent: Apparel
+  ): Promise<MainCategory | null> {
+    const result = await this.service.getMainCategory(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => WishlistItems, {
+    nullable: true,
+    name: "wishlistItems",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "WishlistItems",
+    action: "read",
+    possession: "any",
+  })
+  async getWishlistItems(
+    @graphql.Parent() parent: Apparel
+  ): Promise<WishlistItems | null> {
+    const result = await this.service.getWishlistItems(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

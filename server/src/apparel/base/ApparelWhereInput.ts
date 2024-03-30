@@ -14,9 +14,22 @@ import { ApiProperty } from "@nestjs/swagger";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
-import { StringFilter } from "../../util/StringFilter";
 import { FloatNullableFilter } from "../../util/FloatNullableFilter";
-import { OrderListRelationFilter } from "../../order/base/OrderListRelationFilter";
+import { ApparelTypeWhereUniqueInput } from "../../apparelType/base/ApparelTypeWhereUniqueInput";
+import { BrandWhereUniqueInput } from "../../brand/base/BrandWhereUniqueInput";
+import { CartItemWhereUniqueInput } from "../../cartItem/base/CartItemWhereUniqueInput";
+import { DateTimeNullableFilter } from "../../util/DateTimeNullableFilter";
+import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { StringFilter } from "../../util/StringFilter";
+import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
+import { MainCategoryWhereUniqueInput } from "../../mainCategory/base/MainCategoryWhereUniqueInput";
+import { MaterialListRelationFilter } from "../../material/base/MaterialListRelationFilter";
+import { ModelListRelationFilter } from "../../model/base/ModelListRelationFilter";
+import { ReviewListRelationFilter } from "../../review/base/ReviewListRelationFilter";
+import { SizeListRelationFilter } from "../../size/base/SizeListRelationFilter";
+import { SubCategoryListRelationFilter } from "../../subCategory/base/SubCategoryListRelationFilter";
+import { SubSubcategoryListRelationFilter } from "../../subSubcategory/base/SubSubcategoryListRelationFilter";
+import { WishlistItemsWhereUniqueInput } from "../../wishlistItems/base/WishlistItemsWhereUniqueInput";
 
 @InputType()
 class ApparelWhereInput {
@@ -29,7 +42,109 @@ class ApparelWhereInput {
   @Field(() => StringNullableFilter, {
     nullable: true,
   })
-  description?: StringNullableFilter;
+  apparelDesc?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  apparelName?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: FloatNullableFilter,
+  })
+  @Type(() => FloatNullableFilter)
+  @IsOptional()
+  @Field(() => FloatNullableFilter, {
+    nullable: true,
+  })
+  apparelPrice?: FloatNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => ApparelTypeWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => ApparelTypeWhereUniqueInput)
+  @IsOptional()
+  @Field(() => ApparelTypeWhereUniqueInput, {
+    nullable: true,
+  })
+  apparelType?: ApparelTypeWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => BrandWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => BrandWhereUniqueInput)
+  @IsOptional()
+  @Field(() => BrandWhereUniqueInput, {
+    nullable: true,
+  })
+  brand?: BrandWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => CartItemWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CartItemWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CartItemWhereUniqueInput, {
+    nullable: true,
+  })
+  cartItem?: CartItemWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: FloatNullableFilter,
+  })
+  @Type(() => FloatNullableFilter)
+  @IsOptional()
+  @Field(() => FloatNullableFilter, {
+    nullable: true,
+  })
+  discountedPrice?: FloatNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: DateTimeNullableFilter,
+  })
+  @Type(() => DateTimeNullableFilter)
+  @IsOptional()
+  @Field(() => DateTimeNullableFilter, {
+    nullable: true,
+  })
+  discountEndDate?: DateTimeNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: DecimalNullableFilter,
+  })
+  @Type(() => DecimalNullableFilter)
+  @IsOptional()
+  @Field(() => DecimalNullableFilter, {
+    nullable: true,
+  })
+  discountPercentage?: DecimalNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: DateTimeNullableFilter,
+  })
+  @Type(() => DateTimeNullableFilter)
+  @IsOptional()
+  @Field(() => DateTimeNullableFilter, {
+    nullable: true,
+  })
+  discountStartDate?: DateTimeNullableFilter;
 
   @ApiProperty({
     required: false,
@@ -44,37 +159,110 @@ class ApparelWhereInput {
 
   @ApiProperty({
     required: false,
-    type: FloatNullableFilter,
+    type: BooleanNullableFilter,
   })
-  @Type(() => FloatNullableFilter)
+  @Type(() => BooleanNullableFilter)
   @IsOptional()
-  @Field(() => FloatNullableFilter, {
+  @Field(() => BooleanNullableFilter, {
     nullable: true,
   })
-  itemPrice?: FloatNullableFilter;
+  isDiscounted?: BooleanNullableFilter;
 
   @ApiProperty({
     required: false,
-    type: StringNullableFilter,
-  })
-  @Type(() => StringNullableFilter)
-  @IsOptional()
-  @Field(() => StringNullableFilter, {
-    nullable: true,
-  })
-  name?: StringNullableFilter;
-
-  @ApiProperty({
-    required: false,
-    type: () => OrderListRelationFilter,
+    type: () => MainCategoryWhereUniqueInput,
   })
   @ValidateNested()
-  @Type(() => OrderListRelationFilter)
+  @Type(() => MainCategoryWhereUniqueInput)
   @IsOptional()
-  @Field(() => OrderListRelationFilter, {
+  @Field(() => MainCategoryWhereUniqueInput, {
     nullable: true,
   })
-  orders?: OrderListRelationFilter;
+  mainCategory?: MainCategoryWhereUniqueInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => MaterialListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => MaterialListRelationFilter)
+  @IsOptional()
+  @Field(() => MaterialListRelationFilter, {
+    nullable: true,
+  })
+  materials?: MaterialListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => ModelListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => ModelListRelationFilter)
+  @IsOptional()
+  @Field(() => ModelListRelationFilter, {
+    nullable: true,
+  })
+  models?: ModelListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => ReviewListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => ReviewListRelationFilter)
+  @IsOptional()
+  @Field(() => ReviewListRelationFilter, {
+    nullable: true,
+  })
+  reviews?: ReviewListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => SizeListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => SizeListRelationFilter)
+  @IsOptional()
+  @Field(() => SizeListRelationFilter, {
+    nullable: true,
+  })
+  sizes?: SizeListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => SubCategoryListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => SubCategoryListRelationFilter)
+  @IsOptional()
+  @Field(() => SubCategoryListRelationFilter, {
+    nullable: true,
+  })
+  subCategories?: SubCategoryListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => SubSubcategoryListRelationFilter,
+  })
+  @ValidateNested()
+  @Type(() => SubSubcategoryListRelationFilter)
+  @IsOptional()
+  @Field(() => SubSubcategoryListRelationFilter, {
+    nullable: true,
+  })
+  subSubcategories?: SubSubcategoryListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    type: () => WishlistItemsWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => WishlistItemsWhereUniqueInput)
+  @IsOptional()
+  @Field(() => WishlistItemsWhereUniqueInput, {
+    nullable: true,
+  })
+  wishlistItems?: WishlistItemsWhereUniqueInput;
 }
 
 export { ApparelWhereInput as ApparelWhereInput };
