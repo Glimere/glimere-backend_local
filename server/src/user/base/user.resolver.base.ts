@@ -26,6 +26,20 @@ import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { CreateUserArgs } from "./CreateUserArgs";
 import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
+import { CardFindManyArgs } from "../../card/base/CardFindManyArgs";
+import { Card } from "../../card/base/Card";
+import { CartFindManyArgs } from "../../cart/base/CartFindManyArgs";
+import { Cart } from "../../cart/base/Cart";
+import { FollowingFindManyArgs } from "../../following/base/FollowingFindManyArgs";
+import { Following } from "../../following/base/Following";
+import { ReviewFindManyArgs } from "../../review/base/ReviewFindManyArgs";
+import { Review } from "../../review/base/Review";
+import { ShippingAddressFindManyArgs } from "../../shippingAddress/base/ShippingAddressFindManyArgs";
+import { ShippingAddress } from "../../shippingAddress/base/ShippingAddress";
+import { SizeFindManyArgs } from "../../size/base/SizeFindManyArgs";
+import { Size } from "../../size/base/Size";
+import { WishlistFindManyArgs } from "../../wishlist/base/WishlistFindManyArgs";
+import { Wishlist } from "../../wishlist/base/Wishlist";
 import { UserService } from "../user.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => User)
@@ -130,5 +144,145 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Card], { name: "cards" })
+  @nestAccessControl.UseRoles({
+    resource: "Card",
+    action: "read",
+    possession: "any",
+  })
+  async findCards(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: CardFindManyArgs
+  ): Promise<Card[]> {
+    const results = await this.service.findCards(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Cart], { name: "carts" })
+  @nestAccessControl.UseRoles({
+    resource: "Cart",
+    action: "read",
+    possession: "any",
+  })
+  async findCarts(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: CartFindManyArgs
+  ): Promise<Cart[]> {
+    const results = await this.service.findCarts(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Following], { name: "followings" })
+  @nestAccessControl.UseRoles({
+    resource: "Following",
+    action: "read",
+    possession: "any",
+  })
+  async findFollowings(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: FollowingFindManyArgs
+  ): Promise<Following[]> {
+    const results = await this.service.findFollowings(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Review], { name: "reviews" })
+  @nestAccessControl.UseRoles({
+    resource: "Review",
+    action: "read",
+    possession: "any",
+  })
+  async findReviews(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: ReviewFindManyArgs
+  ): Promise<Review[]> {
+    const results = await this.service.findReviews(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [ShippingAddress], { name: "shippingAddress" })
+  @nestAccessControl.UseRoles({
+    resource: "ShippingAddress",
+    action: "read",
+    possession: "any",
+  })
+  async findShippingAddress(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: ShippingAddressFindManyArgs
+  ): Promise<ShippingAddress[]> {
+    const results = await this.service.findShippingAddress(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Size], { name: "sizes" })
+  @nestAccessControl.UseRoles({
+    resource: "Size",
+    action: "read",
+    possession: "any",
+  })
+  async findSizes(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: SizeFindManyArgs
+  ): Promise<Size[]> {
+    const results = await this.service.findSizes(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [Wishlist], { name: "wishlists" })
+  @nestAccessControl.UseRoles({
+    resource: "Wishlist",
+    action: "read",
+    possession: "any",
+  })
+  async findWishlists(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: WishlistFindManyArgs
+  ): Promise<Wishlist[]> {
+    const results = await this.service.findWishlists(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

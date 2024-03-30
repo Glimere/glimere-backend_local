@@ -12,7 +12,6 @@ import {
 } from "react-admin";
 
 import { CUSTOMER_TITLE_FIELD } from "./CustomerTitle";
-import { APPAREL_TITLE_FIELD } from "../apparel/ApparelTitle";
 import { ADDRESS_TITLE_FIELD } from "../address/AddressTitle";
 
 export const CustomerShow = (props: ShowProps): React.ReactElement => {
@@ -45,13 +44,6 @@ export const CustomerShow = (props: ShowProps): React.ReactElement => {
             </ReferenceField>
             <TextField label="Discount" source="discount" />
             <TextField label="ID" source="id" />
-            <ReferenceField
-              label="Product"
-              source="apparel.id"
-              reference="Apparel"
-            >
-              <TextField source={APPAREL_TITLE_FIELD} />
-            </ReferenceField>
             <TextField label="Quantity" source="quantity" />
             <TextField label="Total Price" source="totalPrice" />
             <DateField source="updatedAt" label="Updated At" />

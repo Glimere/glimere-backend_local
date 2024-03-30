@@ -55,12 +55,6 @@ export class OrderControllerBase {
               connect: data.customer,
             }
           : undefined,
-
-        product: data.product
-          ? {
-              connect: data.product,
-            }
-          : undefined,
       },
       select: {
         createdAt: true,
@@ -73,13 +67,6 @@ export class OrderControllerBase {
 
         discount: true,
         id: true,
-
-        product: {
-          select: {
-            id: true,
-          },
-        },
-
         quantity: true,
         totalPrice: true,
         updatedAt: true,
@@ -114,13 +101,6 @@ export class OrderControllerBase {
 
         discount: true,
         id: true,
-
-        product: {
-          select: {
-            id: true,
-          },
-        },
-
         quantity: true,
         totalPrice: true,
         updatedAt: true,
@@ -156,13 +136,6 @@ export class OrderControllerBase {
 
         discount: true,
         id: true,
-
-        product: {
-          select: {
-            id: true,
-          },
-        },
-
         quantity: true,
         totalPrice: true,
         updatedAt: true,
@@ -203,12 +176,6 @@ export class OrderControllerBase {
                 connect: data.customer,
               }
             : undefined,
-
-          product: data.product
-            ? {
-                connect: data.product,
-              }
-            : undefined,
         },
         select: {
           createdAt: true,
@@ -221,13 +188,6 @@ export class OrderControllerBase {
 
           discount: true,
           id: true,
-
-          product: {
-            select: {
-              id: true,
-            },
-          },
-
           quantity: true,
           totalPrice: true,
           updatedAt: true,
@@ -271,13 +231,6 @@ export class OrderControllerBase {
 
           discount: true,
           id: true,
-
-          product: {
-            select: {
-              id: true,
-            },
-          },
-
           quantity: true,
           totalPrice: true,
           updatedAt: true,

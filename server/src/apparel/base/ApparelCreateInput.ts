@@ -9,16 +9,29 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field, Float } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsString,
   IsOptional,
   IsNumber,
   ValidateNested,
+  IsDate,
+  IsBoolean,
 } from "class-validator";
-import { OrderCreateNestedManyWithoutApparelsInput } from "./OrderCreateNestedManyWithoutApparelsInput";
+import { ApparelTypeWhereUniqueInput } from "../../apparelType/base/ApparelTypeWhereUniqueInput";
 import { Type } from "class-transformer";
+import { BrandWhereUniqueInput } from "../../brand/base/BrandWhereUniqueInput";
+import { CartItemWhereUniqueInput } from "../../cartItem/base/CartItemWhereUniqueInput";
+import { Decimal } from "decimal.js";
+import { MainCategoryWhereUniqueInput } from "../../mainCategory/base/MainCategoryWhereUniqueInput";
+import { MaterialCreateNestedManyWithoutApparelsInput } from "./MaterialCreateNestedManyWithoutApparelsInput";
+import { ModelCreateNestedManyWithoutApparelsInput } from "./ModelCreateNestedManyWithoutApparelsInput";
+import { ReviewCreateNestedManyWithoutApparelsInput } from "./ReviewCreateNestedManyWithoutApparelsInput";
+import { SizeCreateNestedManyWithoutApparelsInput } from "./SizeCreateNestedManyWithoutApparelsInput";
+import { SubCategoryCreateNestedManyWithoutApparelsInput } from "./SubCategoryCreateNestedManyWithoutApparelsInput";
+import { SubSubcategoryCreateNestedManyWithoutApparelsInput } from "./SubSubcategoryCreateNestedManyWithoutApparelsInput";
+import { WishlistItemsWhereUniqueInput } from "../../wishlistItems/base/WishlistItemsWhereUniqueInput";
 
 @InputType()
 class ApparelCreateInput {
@@ -31,18 +44,7 @@ class ApparelCreateInput {
   @Field(() => String, {
     nullable: true,
   })
-  description?: string | null;
-
-  @ApiProperty({
-    required: false,
-    type: Number,
-  })
-  @IsNumber()
-  @IsOptional()
-  @Field(() => Number, {
-    nullable: true,
-  })
-  itemPrice?: number | null;
+  apparelDesc?: string | null;
 
   @ApiProperty({
     required: false,
@@ -53,19 +55,205 @@ class ApparelCreateInput {
   @Field(() => String, {
     nullable: true,
   })
-  name?: string | null;
+  apparelName?: string | null;
 
   @ApiProperty({
     required: false,
-    type: () => OrderCreateNestedManyWithoutApparelsInput,
+    type: Number,
   })
-  @ValidateNested()
-  @Type(() => OrderCreateNestedManyWithoutApparelsInput)
+  @IsNumber()
   @IsOptional()
-  @Field(() => OrderCreateNestedManyWithoutApparelsInput, {
+  @Field(() => Number, {
     nullable: true,
   })
-  orders?: OrderCreateNestedManyWithoutApparelsInput;
+  apparelPrice?: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ApparelTypeWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => ApparelTypeWhereUniqueInput)
+  @IsOptional()
+  @Field(() => ApparelTypeWhereUniqueInput, {
+    nullable: true,
+  })
+  apparelType?: ApparelTypeWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => BrandWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => BrandWhereUniqueInput)
+  @IsOptional()
+  @Field(() => BrandWhereUniqueInput, {
+    nullable: true,
+  })
+  brand?: BrandWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => CartItemWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CartItemWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CartItemWhereUniqueInput, {
+    nullable: true,
+  })
+  cartItem?: CartItemWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  discountedPrice?: number | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  discountEndDate?: Date | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Float, {
+    nullable: true,
+  })
+  discountPercentage?: Decimal | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  discountStartDate?: Date | null;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isDiscounted?: boolean | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => MainCategoryWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => MainCategoryWhereUniqueInput)
+  @IsOptional()
+  @Field(() => MainCategoryWhereUniqueInput, {
+    nullable: true,
+  })
+  mainCategory?: MainCategoryWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => MaterialCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => MaterialCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => MaterialCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  materials?: MaterialCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => ModelCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => ModelCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => ModelCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  models?: ModelCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => ReviewCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => ReviewCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => ReviewCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  reviews?: ReviewCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SizeCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => SizeCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => SizeCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  sizes?: SizeCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SubCategoryCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => SubCategoryCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => SubCategoryCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  subCategories?: SubCategoryCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => SubSubcategoryCreateNestedManyWithoutApparelsInput,
+  })
+  @ValidateNested()
+  @Type(() => SubSubcategoryCreateNestedManyWithoutApparelsInput)
+  @IsOptional()
+  @Field(() => SubSubcategoryCreateNestedManyWithoutApparelsInput, {
+    nullable: true,
+  })
+  subSubcategories?: SubSubcategoryCreateNestedManyWithoutApparelsInput;
+
+  @ApiProperty({
+    required: false,
+    type: () => WishlistItemsWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => WishlistItemsWhereUniqueInput)
+  @IsOptional()
+  @Field(() => WishlistItemsWhereUniqueInput, {
+    nullable: true,
+  })
+  wishlistItems?: WishlistItemsWhereUniqueInput | null;
 }
 
 export { ApparelCreateInput as ApparelCreateInput };

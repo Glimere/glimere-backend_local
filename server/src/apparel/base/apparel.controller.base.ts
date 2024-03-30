@@ -26,9 +26,24 @@ import { Apparel } from "./Apparel";
 import { ApparelFindManyArgs } from "./ApparelFindManyArgs";
 import { ApparelWhereUniqueInput } from "./ApparelWhereUniqueInput";
 import { ApparelUpdateInput } from "./ApparelUpdateInput";
-import { OrderFindManyArgs } from "../../order/base/OrderFindManyArgs";
-import { Order } from "../../order/base/Order";
-import { OrderWhereUniqueInput } from "../../order/base/OrderWhereUniqueInput";
+import { MaterialFindManyArgs } from "../../material/base/MaterialFindManyArgs";
+import { Material } from "../../material/base/Material";
+import { MaterialWhereUniqueInput } from "../../material/base/MaterialWhereUniqueInput";
+import { ModelFindManyArgs } from "../../model/base/ModelFindManyArgs";
+import { Model } from "../../model/base/Model";
+import { ModelWhereUniqueInput } from "../../model/base/ModelWhereUniqueInput";
+import { ReviewFindManyArgs } from "../../review/base/ReviewFindManyArgs";
+import { Review } from "../../review/base/Review";
+import { ReviewWhereUniqueInput } from "../../review/base/ReviewWhereUniqueInput";
+import { SizeFindManyArgs } from "../../size/base/SizeFindManyArgs";
+import { Size } from "../../size/base/Size";
+import { SizeWhereUniqueInput } from "../../size/base/SizeWhereUniqueInput";
+import { SubCategoryFindManyArgs } from "../../subCategory/base/SubCategoryFindManyArgs";
+import { SubCategory } from "../../subCategory/base/SubCategory";
+import { SubCategoryWhereUniqueInput } from "../../subCategory/base/SubCategoryWhereUniqueInput";
+import { SubSubcategoryFindManyArgs } from "../../subSubcategory/base/SubSubcategoryFindManyArgs";
+import { SubSubcategory } from "../../subSubcategory/base/SubSubcategory";
+import { SubSubcategoryWhereUniqueInput } from "../../subSubcategory/base/SubSubcategoryWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -52,14 +67,83 @@ export class ApparelControllerBase {
     @common.Body() data: ApparelCreateInput
   ): Promise<Apparel> {
     return await this.service.createApparel({
-      data: data,
+      data: {
+        ...data,
+
+        apparelType: data.apparelType
+          ? {
+              connect: data.apparelType,
+            }
+          : undefined,
+
+        brand: data.brand
+          ? {
+              connect: data.brand,
+            }
+          : undefined,
+
+        cartItem: data.cartItem
+          ? {
+              connect: data.cartItem,
+            }
+          : undefined,
+
+        mainCategory: data.mainCategory
+          ? {
+              connect: data.mainCategory,
+            }
+          : undefined,
+
+        wishlistItems: data.wishlistItems
+          ? {
+              connect: data.wishlistItems,
+            }
+          : undefined,
+      },
       select: {
+        apparelDesc: true,
+        apparelName: true,
+        apparelPrice: true,
+
+        apparelType: {
+          select: {
+            id: true,
+          },
+        },
+
+        brand: {
+          select: {
+            id: true,
+          },
+        },
+
+        cartItem: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
-        description: true,
+        discountedPrice: true,
+        discountEndDate: true,
+        discountPercentage: true,
+        discountStartDate: true,
         id: true,
-        itemPrice: true,
-        name: true,
+        isDiscounted: true,
+
+        mainCategory: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
+
+        wishlistItems: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -81,12 +165,49 @@ export class ApparelControllerBase {
     return this.service.apparels({
       ...args,
       select: {
+        apparelDesc: true,
+        apparelName: true,
+        apparelPrice: true,
+
+        apparelType: {
+          select: {
+            id: true,
+          },
+        },
+
+        brand: {
+          select: {
+            id: true,
+          },
+        },
+
+        cartItem: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
-        description: true,
+        discountedPrice: true,
+        discountEndDate: true,
+        discountPercentage: true,
+        discountStartDate: true,
         id: true,
-        itemPrice: true,
-        name: true,
+        isDiscounted: true,
+
+        mainCategory: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
+
+        wishlistItems: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
@@ -109,12 +230,49 @@ export class ApparelControllerBase {
     const result = await this.service.apparel({
       where: params,
       select: {
+        apparelDesc: true,
+        apparelName: true,
+        apparelPrice: true,
+
+        apparelType: {
+          select: {
+            id: true,
+          },
+        },
+
+        brand: {
+          select: {
+            id: true,
+          },
+        },
+
+        cartItem: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
-        description: true,
+        discountedPrice: true,
+        discountEndDate: true,
+        discountPercentage: true,
+        discountStartDate: true,
         id: true,
-        itemPrice: true,
-        name: true,
+        isDiscounted: true,
+
+        mainCategory: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
+
+        wishlistItems: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (result === null) {
@@ -144,14 +302,83 @@ export class ApparelControllerBase {
     try {
       return await this.service.updateApparel({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          apparelType: data.apparelType
+            ? {
+                connect: data.apparelType,
+              }
+            : undefined,
+
+          brand: data.brand
+            ? {
+                connect: data.brand,
+              }
+            : undefined,
+
+          cartItem: data.cartItem
+            ? {
+                connect: data.cartItem,
+              }
+            : undefined,
+
+          mainCategory: data.mainCategory
+            ? {
+                connect: data.mainCategory,
+              }
+            : undefined,
+
+          wishlistItems: data.wishlistItems
+            ? {
+                connect: data.wishlistItems,
+              }
+            : undefined,
+        },
         select: {
+          apparelDesc: true,
+          apparelName: true,
+          apparelPrice: true,
+
+          apparelType: {
+            select: {
+              id: true,
+            },
+          },
+
+          brand: {
+            select: {
+              id: true,
+            },
+          },
+
+          cartItem: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
-          description: true,
+          discountedPrice: true,
+          discountEndDate: true,
+          discountPercentage: true,
+          discountStartDate: true,
           id: true,
-          itemPrice: true,
-          name: true,
+          isDiscounted: true,
+
+          mainCategory: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
+
+          wishlistItems: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -182,12 +409,49 @@ export class ApparelControllerBase {
       return await this.service.deleteApparel({
         where: params,
         select: {
+          apparelDesc: true,
+          apparelName: true,
+          apparelPrice: true,
+
+          apparelType: {
+            select: {
+              id: true,
+            },
+          },
+
+          brand: {
+            select: {
+              id: true,
+            },
+          },
+
+          cartItem: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
-          description: true,
+          discountedPrice: true,
+          discountEndDate: true,
+          discountPercentage: true,
+          discountStartDate: true,
           id: true,
-          itemPrice: true,
-          name: true,
+          isDiscounted: true,
+
+          mainCategory: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
+
+          wishlistItems: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -201,40 +465,37 @@ export class ApparelControllerBase {
   }
 
   @common.UseInterceptors(AclFilterResponseInterceptor)
-  @common.Get("/:id/orders")
-  @ApiNestedQuery(OrderFindManyArgs)
+  @common.Get("/:id/materials")
+  @ApiNestedQuery(MaterialFindManyArgs)
   @nestAccessControl.UseRoles({
-    resource: "Order",
+    resource: "Material",
     action: "read",
     possession: "any",
   })
-  async findOrders(
+  async findMaterials(
     @common.Req() request: Request,
     @common.Param() params: ApparelWhereUniqueInput
-  ): Promise<Order[]> {
-    const query = plainToClass(OrderFindManyArgs, request.query);
-    const results = await this.service.findOrders(params.id, {
+  ): Promise<Material[]> {
+    const query = plainToClass(MaterialFindManyArgs, request.query);
+    const results = await this.service.findMaterials(params.id, {
       ...query,
       select: {
+        apparel: {
+          select: {
+            id: true,
+          },
+        },
+
+        cost: true,
         createdAt: true,
-
-        customer: {
-          select: {
-            id: true,
-          },
-        },
-
-        discount: true,
+        environmentalImpact: true,
+        historyAndOrigin: true,
         id: true,
-
-        product: {
-          select: {
-            id: true,
-          },
-        },
-
-        quantity: true,
-        totalPrice: true,
+        isNatural: true,
+        materialImg: true,
+        materialName: true,
+        properties: true,
+        sustainabilityPractices: true,
         updatedAt: true,
       },
     });
@@ -246,18 +507,18 @@ export class ApparelControllerBase {
     return results;
   }
 
-  @common.Post("/:id/orders")
+  @common.Post("/:id/materials")
   @nestAccessControl.UseRoles({
     resource: "Apparel",
     action: "update",
     possession: "any",
   })
-  async connectOrders(
+  async connectMaterials(
     @common.Param() params: ApparelWhereUniqueInput,
-    @common.Body() body: OrderWhereUniqueInput[]
+    @common.Body() body: MaterialWhereUniqueInput[]
   ): Promise<void> {
     const data = {
-      orders: {
+      materials: {
         connect: body,
       },
     };
@@ -268,18 +529,18 @@ export class ApparelControllerBase {
     });
   }
 
-  @common.Patch("/:id/orders")
+  @common.Patch("/:id/materials")
   @nestAccessControl.UseRoles({
     resource: "Apparel",
     action: "update",
     possession: "any",
   })
-  async updateOrders(
+  async updateMaterials(
     @common.Param() params: ApparelWhereUniqueInput,
-    @common.Body() body: OrderWhereUniqueInput[]
+    @common.Body() body: MaterialWhereUniqueInput[]
   ): Promise<void> {
     const data = {
-      orders: {
+      materials: {
         set: body,
       },
     };
@@ -290,18 +551,536 @@ export class ApparelControllerBase {
     });
   }
 
-  @common.Delete("/:id/orders")
+  @common.Delete("/:id/materials")
   @nestAccessControl.UseRoles({
     resource: "Apparel",
     action: "update",
     possession: "any",
   })
-  async disconnectOrders(
+  async disconnectMaterials(
     @common.Param() params: ApparelWhereUniqueInput,
-    @common.Body() body: OrderWhereUniqueInput[]
+    @common.Body() body: MaterialWhereUniqueInput[]
   ): Promise<void> {
     const data = {
-      orders: {
+      materials: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/models")
+  @ApiNestedQuery(ModelFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Model",
+    action: "read",
+    possession: "any",
+  })
+  async findModels(
+    @common.Req() request: Request,
+    @common.Param() params: ApparelWhereUniqueInput
+  ): Promise<Model[]> {
+    const query = plainToClass(ModelFindManyArgs, request.query);
+    const results = await this.service.findModels(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        id: true,
+        modelFile: true,
+
+        modelProperties: {
+          select: {
+            id: true,
+          },
+        },
+
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/models")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async connectModels(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      models: {
+        connect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/models")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async updateModels(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      models: {
+        set: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/models")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectModels(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ModelWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      models: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/reviews")
+  @ApiNestedQuery(ReviewFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Review",
+    action: "read",
+    possession: "any",
+  })
+  async findReviews(
+    @common.Req() request: Request,
+    @common.Param() params: ApparelWhereUniqueInput
+  ): Promise<Review[]> {
+    const query = plainToClass(ReviewFindManyArgs, request.query);
+    const results = await this.service.findReviews(params.id, {
+      ...query,
+      select: {
+        apparel: {
+          select: {
+            id: true,
+          },
+        },
+
+        comment: true,
+        createdAt: true,
+        id: true,
+        ratingNumber: true,
+        reviewTime: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/reviews")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async connectReviews(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ReviewWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reviews: {
+        connect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/reviews")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async updateReviews(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ReviewWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reviews: {
+        set: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/reviews")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectReviews(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: ReviewWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      reviews: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/sizes")
+  @ApiNestedQuery(SizeFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Size",
+    action: "read",
+    possession: "any",
+  })
+  async findSizes(
+    @common.Req() request: Request,
+    @common.Param() params: ApparelWhereUniqueInput
+  ): Promise<Size[]> {
+    const query = plainToClass(SizeFindManyArgs, request.query);
+    const results = await this.service.findSizes(params.id, {
+      ...query,
+      select: {
+        apparel: {
+          select: {
+            id: true,
+          },
+        },
+
+        apparelType: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        id: true,
+        measurements: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/sizes")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async connectSizes(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SizeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      sizes: {
+        connect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/sizes")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async updateSizes(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SizeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      sizes: {
+        set: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/sizes")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectSizes(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SizeWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      sizes: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/subCategories")
+  @ApiNestedQuery(SubCategoryFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "SubCategory",
+    action: "read",
+    possession: "any",
+  })
+  async findSubCategories(
+    @common.Req() request: Request,
+    @common.Param() params: ApparelWhereUniqueInput
+  ): Promise<SubCategory[]> {
+    const query = plainToClass(SubCategoryFindManyArgs, request.query);
+    const results = await this.service.findSubCategories(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        id: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/subCategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async connectSubCategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubCategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subCategories: {
+        connect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/subCategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async updateSubCategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubCategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subCategories: {
+        set: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/subCategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectSubCategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubCategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subCategories: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/subSubcategories")
+  @ApiNestedQuery(SubSubcategoryFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "SubSubcategory",
+    action: "read",
+    possession: "any",
+  })
+  async findSubSubcategories(
+    @common.Req() request: Request,
+    @common.Param() params: ApparelWhereUniqueInput
+  ): Promise<SubSubcategory[]> {
+    const query = plainToClass(SubSubcategoryFindManyArgs, request.query);
+    const results = await this.service.findSubSubcategories(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        id: true,
+        name: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/subSubcategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async connectSubSubcategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubSubcategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subSubcategories: {
+        connect: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/subSubcategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async updateSubSubcategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubSubcategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subSubcategories: {
+        set: body,
+      },
+    };
+    await this.service.updateApparel({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/subSubcategories")
+  @nestAccessControl.UseRoles({
+    resource: "Apparel",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectSubSubcategories(
+    @common.Param() params: ApparelWhereUniqueInput,
+    @common.Body() body: SubSubcategoryWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      subSubcategories: {
         disconnect: body,
       },
     };

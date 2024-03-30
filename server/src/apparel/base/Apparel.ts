@@ -9,27 +9,42 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Float } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
-  IsDate,
   IsString,
   IsOptional,
   IsNumber,
   ValidateNested,
+  IsDate,
+  IsBoolean,
 } from "class-validator";
+import { ApparelType } from "../../apparelType/base/ApparelType";
 import { Type } from "class-transformer";
-import { Order } from "../../order/base/Order";
+import { Brand } from "../../brand/base/Brand";
+import { CartItem } from "../../cartItem/base/CartItem";
+import { Decimal } from "decimal.js";
+import { MainCategory } from "../../mainCategory/base/MainCategory";
+import { Material } from "../../material/base/Material";
+import { Model } from "../../model/base/Model";
+import { Review } from "../../review/base/Review";
+import { Size } from "../../size/base/Size";
+import { SubCategory } from "../../subCategory/base/SubCategory";
+import { SubSubcategory } from "../../subSubcategory/base/SubSubcategory";
+import { WishlistItems } from "../../wishlistItems/base/WishlistItems";
 
 @ObjectType()
 class Apparel {
   @ApiProperty({
-    required: true,
+    required: false,
+    type: String,
   })
-  @IsDate()
-  @Type(() => Date)
-  @Field(() => Date)
-  createdAt!: Date;
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  apparelDesc!: string | null;
 
   @ApiProperty({
     required: false,
@@ -40,7 +55,97 @@ class Apparel {
   @Field(() => String, {
     nullable: true,
   })
-  description!: string | null;
+  apparelName!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  apparelPrice!: number | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ApparelType,
+  })
+  @ValidateNested()
+  @Type(() => ApparelType)
+  @IsOptional()
+  apparelType?: ApparelType | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => Brand,
+  })
+  @ValidateNested()
+  @Type(() => Brand)
+  @IsOptional()
+  brand?: Brand | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => CartItem,
+  })
+  @ValidateNested()
+  @Type(() => CartItem)
+  @IsOptional()
+  cartItem?: CartItem | null;
+
+  @ApiProperty({
+    required: true,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @Field(() => Date)
+  createdAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Number, {
+    nullable: true,
+  })
+  discountedPrice!: number | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  discountEndDate!: Date | null;
+
+  @ApiProperty({
+    required: false,
+    type: Number,
+  })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Float, {
+    nullable: true,
+  })
+  discountPercentage!: Decimal | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  discountStartDate!: Date | null;
 
   @ApiProperty({
     required: true,
@@ -52,34 +157,77 @@ class Apparel {
 
   @ApiProperty({
     required: false,
-    type: Number,
+    type: Boolean,
   })
-  @IsNumber()
+  @IsBoolean()
   @IsOptional()
-  @Field(() => Number, {
+  @Field(() => Boolean, {
     nullable: true,
   })
-  itemPrice!: number | null;
+  isDiscounted!: boolean | null;
 
   @ApiProperty({
     required: false,
-    type: String,
-  })
-  @IsString()
-  @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  name!: string | null;
-
-  @ApiProperty({
-    required: false,
-    type: () => [Order],
+    type: () => MainCategory,
   })
   @ValidateNested()
-  @Type(() => Order)
+  @Type(() => MainCategory)
   @IsOptional()
-  orders?: Array<Order>;
+  mainCategory?: MainCategory | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Material],
+  })
+  @ValidateNested()
+  @Type(() => Material)
+  @IsOptional()
+  materials?: Array<Material>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Model],
+  })
+  @ValidateNested()
+  @Type(() => Model)
+  @IsOptional()
+  models?: Array<Model>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Review],
+  })
+  @ValidateNested()
+  @Type(() => Review)
+  @IsOptional()
+  reviews?: Array<Review>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [Size],
+  })
+  @ValidateNested()
+  @Type(() => Size)
+  @IsOptional()
+  sizes?: Array<Size>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [SubCategory],
+  })
+  @ValidateNested()
+  @Type(() => SubCategory)
+  @IsOptional()
+  subCategories?: Array<SubCategory>;
+
+  @ApiProperty({
+    required: false,
+    type: () => [SubSubcategory],
+  })
+  @ValidateNested()
+  @Type(() => SubSubcategory)
+  @IsOptional()
+  subSubcategories?: Array<SubSubcategory>;
 
   @ApiProperty({
     required: true,
@@ -88,6 +236,15 @@ class Apparel {
   @Type(() => Date)
   @Field(() => Date)
   updatedAt!: Date;
+
+  @ApiProperty({
+    required: false,
+    type: () => WishlistItems,
+  })
+  @ValidateNested()
+  @Type(() => WishlistItems)
+  @IsOptional()
+  wishlistItems?: WishlistItems | null;
 }
 
 export { Apparel as Apparel };

@@ -18,37 +18,57 @@ import { ApparelService } from "../apparel.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  apparelDesc: "exampleApparelDesc",
+  apparelName: "exampleApparelName",
+  apparelPrice: 42.42,
   createdAt: new Date(),
-  description: "exampleDescription",
+  discountedPrice: 42.42,
+  discountEndDate: new Date(),
+  discountPercentage: 42.424242424,
+  discountStartDate: new Date(),
   id: "exampleId",
-  itemPrice: 42.42,
-  name: "exampleName",
+  isDiscounted: "true",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  apparelDesc: "exampleApparelDesc",
+  apparelName: "exampleApparelName",
+  apparelPrice: 42.42,
   createdAt: new Date(),
-  description: "exampleDescription",
+  discountedPrice: 42.42,
+  discountEndDate: new Date(),
+  discountPercentage: 42.424242424,
+  discountStartDate: new Date(),
   id: "exampleId",
-  itemPrice: 42.42,
-  name: "exampleName",
+  isDiscounted: "true",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    apparelDesc: "exampleApparelDesc",
+    apparelName: "exampleApparelName",
+    apparelPrice: 42.42,
     createdAt: new Date(),
-    description: "exampleDescription",
+    discountedPrice: 42.42,
+    discountEndDate: new Date(),
+    discountPercentage: 42.424242424,
+    discountStartDate: new Date(),
     id: "exampleId",
-    itemPrice: 42.42,
-    name: "exampleName",
+    isDiscounted: "true",
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  apparelDesc: "exampleApparelDesc",
+  apparelName: "exampleApparelName",
+  apparelPrice: 42.42,
   createdAt: new Date(),
-  description: "exampleDescription",
+  discountedPrice: 42.42,
+  discountEndDate: new Date(),
+  discountPercentage: 42.424242424,
+  discountStartDate: new Date(),
   id: "exampleId",
-  itemPrice: 42.42,
-  name: "exampleName",
+  isDiscounted: "true",
   updatedAt: new Date(),
 };
 
@@ -135,6 +155,8 @@ describe("Apparel", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        discountEndDate: CREATE_RESULT.discountEndDate.toISOString(),
+        discountStartDate: CREATE_RESULT.discountStartDate.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -147,6 +169,9 @@ describe("Apparel", () => {
         {
           ...FIND_MANY_RESULT[0],
           createdAt: FIND_MANY_RESULT[0].createdAt.toISOString(),
+          discountEndDate: FIND_MANY_RESULT[0].discountEndDate.toISOString(),
+          discountStartDate:
+            FIND_MANY_RESULT[0].discountStartDate.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
@@ -170,6 +195,8 @@ describe("Apparel", () => {
       .expect({
         ...FIND_ONE_RESULT,
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
+        discountEndDate: FIND_ONE_RESULT.discountEndDate.toISOString(),
+        discountStartDate: FIND_ONE_RESULT.discountStartDate.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -183,6 +210,8 @@ describe("Apparel", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        discountEndDate: CREATE_RESULT.discountEndDate.toISOString(),
+        discountStartDate: CREATE_RESULT.discountStartDate.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {
