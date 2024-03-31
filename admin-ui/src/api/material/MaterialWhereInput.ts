@@ -1,5 +1,5 @@
 import { ApparelWhereUniqueInput } from "../apparel/ApparelWhereUniqueInput";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 import { JsonFilter } from "../../util/JsonFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
@@ -7,7 +7,7 @@ import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
 
 export type MaterialWhereInput = {
   apparel?: ApparelWhereUniqueInput;
-  cost?: DecimalNullableFilter;
+  cost?: IntNullableFilter;
   environmentalImpact?: JsonFilter;
   historyAndOrigin?: StringNullableFilter;
   id?: StringFilter;

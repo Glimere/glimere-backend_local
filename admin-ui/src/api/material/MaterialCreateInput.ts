@@ -1,10 +1,9 @@
 import { ApparelWhereUniqueInput } from "../apparel/ApparelWhereUniqueInput";
-import { Decimal } from "decimal.js";
 import { InputJsonValue } from "../../types";
 
 export type MaterialCreateInput = {
   apparel?: ApparelWhereUniqueInput | null;
-  cost?: Decimal | null;
+  cost?: number | null;
   environmentalImpact?: InputJsonValue;
   historyAndOrigin?: string | null;
   isNatural?: boolean | null;

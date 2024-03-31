@@ -20,7 +20,7 @@ export const MaterialCreate = (props: CreateProps): React.ReactElement => {
         <ReferenceInput source="apparel.id" reference="Apparel" label="apparel">
           <SelectInput optionText={ApparelTitle} />
         </ReferenceInput>
-        <NumberInput label="cost" source="cost" />
+        <NumberInput step={1} label="cost" source="cost" />
         <div />
         <TextInput
           label="history_and_origin"

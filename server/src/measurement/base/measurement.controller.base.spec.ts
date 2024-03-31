@@ -22,14 +22,14 @@ const CREATE_INPUT = {
   id: "exampleId",
   name: "exampleName",
   updatedAt: new Date(),
-  value: 42.424242424,
+  value: 42,
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
   id: "exampleId",
   name: "exampleName",
   updatedAt: new Date(),
-  value: 42.424242424,
+  value: 42,
 };
 const FIND_MANY_RESULT = [
   {
@@ -37,7 +37,7 @@ const FIND_MANY_RESULT = [
     id: "exampleId",
     name: "exampleName",
     updatedAt: new Date(),
-    value: 42.424242424,
+    value: 42,
   },
 ];
 const FIND_ONE_RESULT = {
@@ -45,7 +45,7 @@ const FIND_ONE_RESULT = {
   id: "exampleId",
   name: "exampleName",
   updatedAt: new Date(),
-  value: 42.424242424,
+  value: 42,
 };
 
 const service = {

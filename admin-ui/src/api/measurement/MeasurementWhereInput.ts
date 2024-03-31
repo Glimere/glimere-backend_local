@@ -1,11 +1,11 @@
 import { StringFilter } from "../../util/StringFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { SizingUnitWhereUniqueInput } from "../sizingUnit/SizingUnitWhereUniqueInput";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 
 export type MeasurementWhereInput = {
   id?: StringFilter;
   name?: StringNullableFilter;
   sizingUnit?: SizingUnitWhereUniqueInput;
-  value?: DecimalNullableFilter;
+  value?: IntNullableFilter;
 };

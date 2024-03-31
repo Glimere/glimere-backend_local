@@ -24,7 +24,7 @@ export const MeasurementCreate = (props: CreateProps): React.ReactElement => {
         >
           <SelectInput optionText={SizingUnitTitle} />
         </ReferenceInput>
-        <NumberInput label="value" source="value" />
+        <NumberInput step={1} label="value" source="value" />
       </SimpleForm>
     </Create>
   );

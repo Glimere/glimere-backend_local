@@ -75,7 +75,7 @@ model Apparel {
   createdAt           DateTime         @default(now())
   discountedPrice     Float?
   discountEndDate     DateTime?
-  discountPercentage  Decimal?
+  discountPercentage  Int?
   discountStartDate   DateTime?
   id                  String           @id @default(auto()) @map("_id") @db.ObjectId
   isDiscounted        Boolean?
@@ -205,7 +205,7 @@ model SubSubcategory {
 model Material {
   apparel                 Apparel? @relation(fields: [apparelId], references: [id])
   apparelId               String?  @db.ObjectId
-  cost                    Decimal?
+  cost                    Int?
   createdAt               DateTime @default(now())
   environmentalImpact     Json?
   historyAndOrigin        String?
@@ -302,7 +302,7 @@ model Measurement {
   sizingUnit   SizingUnit? @relation(fields: [sizingUnitId], references: [id])
   sizingUnitId String?     @db.ObjectId
   updatedAt    DateTime    @updatedAt
-  value        Decimal?
+  value        Int?
 }
 
 model SizingUnit {

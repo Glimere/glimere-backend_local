@@ -52,7 +52,11 @@ export const ApparelCreate = (props: CreateProps): React.ReactElement => {
         </ReferenceInput>
         <NumberInput label="discounted_price" source="discountedPrice" />
         <DateTimeInput label="discount_end_date" source="discountEndDate" />
-        <NumberInput label="discount_percentage" source="discountPercentage" />
+        <NumberInput
+          step={1}
+          label="discount_percentage"
+          source="discountPercentage"
+        />
         <DateTimeInput label="discount_start_date" source="discountStartDate" />
         <BooleanInput label="is_discounted" source="isDiscounted" />
         <ReferenceInput

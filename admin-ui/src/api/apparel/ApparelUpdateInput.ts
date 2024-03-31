@@ -1,7 +1,6 @@
 import { ApparelTypeWhereUniqueInput } from "../apparelType/ApparelTypeWhereUniqueInput";
 import { BrandWhereUniqueInput } from "../brand/BrandWhereUniqueInput";
 import { CartItemWhereUniqueInput } from "../cartItem/CartItemWhereUniqueInput";
-import { Decimal } from "decimal.js";
 import { MainCategoryWhereUniqueInput } from "../mainCategory/MainCategoryWhereUniqueInput";
 import { MaterialUpdateManyWithoutApparelsInput } from "./MaterialUpdateManyWithoutApparelsInput";
 import { ModelUpdateManyWithoutApparelsInput } from "./ModelUpdateManyWithoutApparelsInput";
@@ -20,7 +19,7 @@ export type ApparelUpdateInput = {
   cartItem?: CartItemWhereUniqueInput | null;
   discountedPrice?: number | null;
   discountEndDate?: Date | null;
-  discountPercentage?: Decimal | null;
+  discountPercentage?: number | null;
   discountStartDate?: Date | null;
   isDiscounted?: boolean | null;
   mainCategory?: MainCategoryWhereUniqueInput | null;

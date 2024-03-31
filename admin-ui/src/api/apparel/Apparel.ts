@@ -1,7 +1,6 @@
 import { ApparelType } from "../apparelType/ApparelType";
 import { Brand } from "../brand/Brand";
 import { CartItem } from "../cartItem/CartItem";
-import { Decimal } from "decimal.js";
 import { MainCategory } from "../mainCategory/MainCategory";
 import { Material } from "../material/Material";
 import { Model } from "../model/Model";
@@ -21,7 +20,7 @@ export type Apparel = {
   createdAt: Date;
   discountedPrice: number | null;
   discountEndDate: Date | null;
-  discountPercentage: Decimal | null;
+  discountPercentage: number | null;
   discountStartDate: Date | null;
   id: string;
   isDiscounted: boolean | null;

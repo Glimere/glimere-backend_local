@@ -9,18 +9,17 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-import { InputType, Field, Float } from "@nestjs/graphql";
+import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { ApparelWhereUniqueInput } from "../../apparel/base/ApparelWhereUniqueInput";
 import {
   ValidateNested,
   IsOptional,
-  IsNumber,
+  IsInt,
   IsString,
   IsBoolean,
 } from "class-validator";
 import { Type } from "class-transformer";
-import { Decimal } from "decimal.js";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
@@ -43,12 +42,12 @@ class MaterialUpdateInput {
     required: false,
     type: Number,
   })
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  @Field(() => Float, {
+  @Field(() => Number, {
     nullable: true,
   })
-  cost?: Decimal | null;
+  cost?: number | null;
 
   @ApiProperty({
     required: false,
