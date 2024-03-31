@@ -1,10 +1,9 @@
 import { Apparel } from "../apparel/Apparel";
-import { Decimal } from "decimal.js";
 import { JsonValue } from "type-fest";
 
 export type Material = {
   apparel?: Apparel | null;
-  cost: Decimal | null;
+  cost: number | null;
   createdAt: Date;
   environmentalImpact: JsonValue;
   historyAndOrigin: string | null;

@@ -19,7 +19,7 @@ import { ApparelTypeWhereUniqueInput } from "../../apparelType/base/ApparelTypeW
 import { BrandWhereUniqueInput } from "../../brand/base/BrandWhereUniqueInput";
 import { CartItemWhereUniqueInput } from "../../cartItem/base/CartItemWhereUniqueInput";
 import { DateTimeNullableFilter } from "../../util/DateTimeNullableFilter";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
 import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
 import { MainCategoryWhereUniqueInput } from "../../mainCategory/base/MainCategoryWhereUniqueInput";
@@ -126,14 +126,14 @@ class ApparelWhereInput {
 
   @ApiProperty({
     required: false,
-    type: DecimalNullableFilter,
+    type: IntNullableFilter,
   })
-  @Type(() => DecimalNullableFilter)
+  @Type(() => IntNullableFilter)
   @IsOptional()
-  @Field(() => DecimalNullableFilter, {
+  @Field(() => IntNullableFilter, {
     nullable: true,
   })
-  discountPercentage?: DecimalNullableFilter;
+  discountPercentage?: IntNullableFilter;
 
   @ApiProperty({
     required: false,

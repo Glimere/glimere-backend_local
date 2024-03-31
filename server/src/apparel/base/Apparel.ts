@@ -9,7 +9,7 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-import { ObjectType, Field, Float } from "@nestjs/graphql";
+import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsString,
@@ -17,13 +17,13 @@ import {
   IsNumber,
   ValidateNested,
   IsDate,
+  IsInt,
   IsBoolean,
 } from "class-validator";
 import { ApparelType } from "../../apparelType/base/ApparelType";
 import { Type } from "class-transformer";
 import { Brand } from "../../brand/base/Brand";
 import { CartItem } from "../../cartItem/base/CartItem";
-import { Decimal } from "decimal.js";
 import { MainCategory } from "../../mainCategory/base/MainCategory";
 import { Material } from "../../material/base/Material";
 import { Model } from "../../model/base/Model";
@@ -129,12 +129,12 @@ class Apparel {
     required: false,
     type: Number,
   })
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  @Field(() => Float, {
+  @Field(() => Number, {
     nullable: true,
   })
-  discountPercentage!: Decimal | null;
+  discountPercentage!: number | null;
 
   @ApiProperty({
     required: false,

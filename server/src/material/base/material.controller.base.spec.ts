@@ -18,7 +18,7 @@ import { MaterialService } from "../material.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
-  cost: 42.424242424,
+  cost: 42,
   createdAt: new Date(),
   historyAndOrigin: "exampleHistoryAndOrigin",
   id: "exampleId",
@@ -29,7 +29,7 @@ const CREATE_INPUT = {
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
-  cost: 42.424242424,
+  cost: 42,
   createdAt: new Date(),
   historyAndOrigin: "exampleHistoryAndOrigin",
   id: "exampleId",
@@ -41,7 +41,7 @@ const CREATE_RESULT = {
 };
 const FIND_MANY_RESULT = [
   {
-    cost: 42.424242424,
+    cost: 42,
     createdAt: new Date(),
     historyAndOrigin: "exampleHistoryAndOrigin",
     id: "exampleId",
@@ -53,7 +53,7 @@ const FIND_MANY_RESULT = [
   },
 ];
 const FIND_ONE_RESULT = {
-  cost: 42.424242424,
+  cost: 42,
   createdAt: new Date(),
   historyAndOrigin: "exampleHistoryAndOrigin",
   id: "exampleId",

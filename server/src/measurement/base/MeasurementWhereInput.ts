@@ -16,7 +16,7 @@ import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { SizingUnitWhereUniqueInput } from "../../sizingUnit/base/SizingUnitWhereUniqueInput";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 
 @InputType()
 class MeasurementWhereInput {
@@ -56,14 +56,14 @@ class MeasurementWhereInput {
 
   @ApiProperty({
     required: false,
-    type: DecimalNullableFilter,
+    type: IntNullableFilter,
   })
-  @Type(() => DecimalNullableFilter)
+  @Type(() => IntNullableFilter)
   @IsOptional()
-  @Field(() => DecimalNullableFilter, {
+  @Field(() => IntNullableFilter, {
     nullable: true,
   })
-  value?: DecimalNullableFilter;
+  value?: IntNullableFilter;
 }
 
 export { MeasurementWhereInput as MeasurementWhereInput };

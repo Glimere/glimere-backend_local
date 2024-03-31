@@ -1,5 +1,4 @@
 import { SizingUnit } from "../sizingUnit/SizingUnit";
-import { Decimal } from "decimal.js";
 
 export type Measurement = {
   createdAt: Date;
@@ -7,5 +6,5 @@ export type Measurement = {
   name: string | null;
   sizingUnit?: SizingUnit | null;
   updatedAt: Date;
-  value: Decimal | null;
+  value: number | null;
 };

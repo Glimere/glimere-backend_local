@@ -14,7 +14,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { ApparelWhereUniqueInput } from "../../apparel/base/ApparelWhereUniqueInput";
 import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 import { JsonFilter } from "../../util/JsonFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
@@ -36,14 +36,14 @@ class MaterialWhereInput {
 
   @ApiProperty({
     required: false,
-    type: DecimalNullableFilter,
+    type: IntNullableFilter,
   })
-  @Type(() => DecimalNullableFilter)
+  @Type(() => IntNullableFilter)
   @IsOptional()
-  @Field(() => DecimalNullableFilter, {
+  @Field(() => IntNullableFilter, {
     nullable: true,
   })
-  cost?: DecimalNullableFilter;
+  cost?: IntNullableFilter;
 
   @ApiProperty({
     required: false,

@@ -4,7 +4,7 @@ import { ApparelTypeWhereUniqueInput } from "../apparelType/ApparelTypeWhereUniq
 import { BrandWhereUniqueInput } from "../brand/BrandWhereUniqueInput";
 import { CartItemWhereUniqueInput } from "../cartItem/CartItemWhereUniqueInput";
 import { DateTimeNullableFilter } from "../../util/DateTimeNullableFilter";
-import { DecimalNullableFilter } from "../../util/DecimalNullableFilter";
+import { IntNullableFilter } from "../../util/IntNullableFilter";
 import { StringFilter } from "../../util/StringFilter";
 import { BooleanNullableFilter } from "../../util/BooleanNullableFilter";
 import { MainCategoryWhereUniqueInput } from "../mainCategory/MainCategoryWhereUniqueInput";
@@ -25,7 +25,7 @@ export type ApparelWhereInput = {
   cartItem?: CartItemWhereUniqueInput;
   discountedPrice?: FloatNullableFilter;
   discountEndDate?: DateTimeNullableFilter;
-  discountPercentage?: DecimalNullableFilter;
+  discountPercentage?: IntNullableFilter;
   discountStartDate?: DateTimeNullableFilter;
   id?: StringFilter;
   isDiscounted?: BooleanNullableFilter;

@@ -9,18 +9,17 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-import { ObjectType, Field, Float } from "@nestjs/graphql";
+import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsDate,
   IsString,
   IsOptional,
   ValidateNested,
-  IsNumber,
+  IsInt,
 } from "class-validator";
 import { Type } from "class-transformer";
 import { SizingUnit } from "../../sizingUnit/base/SizingUnit";
-import { Decimal } from "decimal.js";
 
 @ObjectType()
 class Measurement {
@@ -72,12 +71,12 @@ class Measurement {
     required: false,
     type: Number,
   })
-  @IsNumber()
+  @IsInt()
   @IsOptional()
-  @Field(() => Float, {
+  @Field(() => Number, {
     nullable: true,
   })
-  value!: Decimal | null;
+  value!: number | null;
 }
 
 export { Measurement as Measurement };
