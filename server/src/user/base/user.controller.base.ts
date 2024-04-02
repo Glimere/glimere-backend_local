@@ -71,6 +71,7 @@ export class UserControllerBase {
       data: data,
       select: {
         createdAt: true,
+        email: true,
         firstName: true,
         id: true,
         lastName: true,
@@ -99,6 +100,7 @@ export class UserControllerBase {
       ...args,
       select: {
         createdAt: true,
+        email: true,
         firstName: true,
         id: true,
         lastName: true,
@@ -128,6 +130,7 @@ export class UserControllerBase {
       where: params,
       select: {
         createdAt: true,
+        email: true,
         firstName: true,
         id: true,
         lastName: true,
@@ -166,6 +169,7 @@ export class UserControllerBase {
         data: data,
         select: {
           createdAt: true,
+          email: true,
           firstName: true,
           id: true,
           lastName: true,
@@ -203,6 +207,7 @@ export class UserControllerBase {
         where: params,
         select: {
           createdAt: true,
+          email: true,
           firstName: true,
           id: true,
           lastName: true,

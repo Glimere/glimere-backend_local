@@ -239,6 +239,7 @@ export class ShippingAddressControllerBase {
       ...query,
       select: {
         createdAt: true,
+        email: true,
         firstName: true,
         id: true,
         lastName: true,

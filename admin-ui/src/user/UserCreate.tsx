@@ -39,6 +39,7 @@ export const UserCreate = (props: CreateProps): React.ReactElement => {
         >
           <SelectArrayInput optionText={CartTitle} />
         </ReferenceArrayInput>
+        <TextInput label="email" source="email" type="email" />
         <TextInput label="First Name" source="firstName" />
         <ReferenceArrayInput
           source="followings"
