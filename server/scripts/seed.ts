@@ -36,7 +36,7 @@ async function seed(bcryptSalt: Salt) {
     where: {
       username: data.username,
     },
-
+    
     update: {},
     create: data,
   });
