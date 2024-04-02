@@ -15,9 +15,9 @@ import { CardListRelationFilter } from "../../card/base/CardListRelationFilter";
 import { ValidateNested, IsOptional } from "class-validator";
 import { Type } from "class-transformer";
 import { CartListRelationFilter } from "../../cart/base/CartListRelationFilter";
+import { StringFilter } from "../../util/StringFilter";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { FollowingListRelationFilter } from "../../following/base/FollowingListRelationFilter";
-import { StringFilter } from "../../util/StringFilter";
 import { ReviewListRelationFilter } from "../../review/base/ReviewListRelationFilter";
 import { ShippingAddressListRelationFilter } from "../../shippingAddress/base/ShippingAddressListRelationFilter";
 import { SizeListRelationFilter } from "../../size/base/SizeListRelationFilter";
@@ -51,14 +51,14 @@ class UserWhereInput {
 
   @ApiProperty({
     required: false,
-    type: StringNullableFilter,
+    type: StringFilter,
   })
-  @Type(() => StringNullableFilter)
+  @Type(() => StringFilter)
   @IsOptional()
-  @Field(() => StringNullableFilter, {
+  @Field(() => StringFilter, {
     nullable: true,
   })
-  email?: StringNullableFilter;
+  email?: StringFilter;
 
   @ApiProperty({
     required: false,

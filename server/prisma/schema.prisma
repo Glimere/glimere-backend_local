@@ -11,7 +11,7 @@ model User {
   cards              Card[]
   carts              Cart[]
   createdAt          DateTime          @default(now())
-  email              String?
+  email              String            @unique
   firstName          String?
   followings         Following[]
   id                 String            @id @default(auto()) @map("_id") @db.ObjectId

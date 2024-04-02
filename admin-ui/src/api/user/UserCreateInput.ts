@@ -10,7 +10,7 @@ import { WishlistCreateNestedManyWithoutUsersInput } from "./WishlistCreateNeste
 export type UserCreateInput = {
   cards?: CardCreateNestedManyWithoutUsersInput;
   carts?: CartCreateNestedManyWithoutUsersInput;
-  email?: string | null;
+  email: string;
   firstName?: string | null;
   followings?: FollowingCreateNestedManyWithoutUsersInput;
   lastName?: string | null;
