@@ -11,6 +11,7 @@ import { WishlistListRelationFilter } from "../wishlist/WishlistListRelationFilt
 export type UserWhereInput = {
   cards?: CardListRelationFilter;
   carts?: CartListRelationFilter;
+  email?: StringNullableFilter;
   firstName?: StringNullableFilter;
   followings?: FollowingListRelationFilter;
   id?: StringFilter;

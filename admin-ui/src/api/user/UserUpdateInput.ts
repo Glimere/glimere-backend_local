@@ -10,6 +10,7 @@ import { WishlistUpdateManyWithoutUsersInput } from "./WishlistUpdateManyWithout
 export type UserUpdateInput = {
   cards?: CardUpdateManyWithoutUsersInput;
   carts?: CartUpdateManyWithoutUsersInput;
+  email?: string | null;
   firstName?: string | null;
   followings?: FollowingUpdateManyWithoutUsersInput;
   lastName?: string | null;
