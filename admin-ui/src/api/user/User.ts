@@ -11,7 +11,7 @@ export type User = {
   cards?: Array<Card>;
   carts?: Array<Cart>;
   createdAt: Date;
-  email: string | null;
+  email: string;
   firstName: string | null;
   followings?: Array<Following>;
   id: string;
