@@ -28,6 +28,11 @@ app.use((req, res, next) => {
     next();
 });
 
+// Default route for root URL
+app.get('/', (req, res) => {
+    res.send('Welcome to the Glimere API!');
+});
+
 // Routes
 app.use('/api/apparels', apparelRoutes);
 app.use('/api/users', userRoutes); // Add users route
