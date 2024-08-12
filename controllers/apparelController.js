@@ -1,4 +1,4 @@
-const Apparel = require('../models/apparelModule')
+const Apparel = require('../models/apparelModel')
 const mongoose = require('mongoose')
 
 // get all apparel
