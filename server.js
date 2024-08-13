@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 // Import routes
 const apparelRoutes = require('./routes/apparel');
 const userRoutes = require('./routes/user'); // Add user routes
+const authRoutes = require('./routes/auth');
 // const categoryRoutes = require('./routes/categories'); // Add category routes
 
 // Express app
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/apparels', apparelRoutes);
 app.use('/api/users', userRoutes); // Add users route
+app.use('/api/auth', authRoutes); // Add users route
 // app.use('/api/categories', categoryRoutes); // Add categories route
 
 // Connect to db
