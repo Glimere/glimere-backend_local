@@ -2,56 +2,78 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Auth = require('../models/authModel');
 
-// Register a new user
-const registerUser = async (req, res, next) => {
-    const { name, email, password } = req.body;
+// Generate JWT Token
+const generateToken = (id) => {
+    return jwt.sign({ userId: id }, process.env.SECRET_KEY, {
+        expiresIn: '1h',
+    });
+};
+
+// Register User
+const registerUser = async (req, res) => {
+    const { username, email, password } = req.body;
 
     try {
-        if (!name || !email || !password) {
-            return res.status(400).json({ error: 'All fields are required' });
-        }
-
+        // Check if user exists
         const existingUser = await Auth.findOne({ email });
         if (existingUser) {
-            return res.status(409).json({ error: 'User already exists' }); // 409 for conflict
+            return res.status(400).json({ error: 'User already exists' });
         }
 
+        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new Auth({ name, email, password: hashedPassword });
+
+        // Create user
+        const user = new Auth({
+            username,
+            email,
+            password: hashedPassword,
+        });
         await user.save();
 
-        res.status(201).json({ message: 'Registration successful', user }); // 201 for resource created
+        res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            token: generateToken(user._id),
+            message: 'Registration successful',
+        });
     } catch (error) {
-        next(error); // Forward error to the error-handling middleware
+        res.status(400).json({ error: error.message });
     }
 };
 
-// Login with an existing user
+// Login User
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
+        // Check for user email
         const user = await Auth.findOne({ email });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        // Compare password
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             return res.status(401).json({ error: 'Incorrect password' });
         }
 
-        const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-            expiresIn: '1 hour',
-        });
+        // Generate token
+        const token = generateToken(user._id);
 
-        res.status(200).json({ token, message: 'Login successful' });
+        res.status(200).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            token,
+            message: 'Login successful',
+        });
     } catch (error) {
-        next(error); // Forward error to the error-handling middleware
+        next(error);
     }
 };
 
