@@ -17,11 +17,10 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-    // origin: 'https://www.glimere.com',
     optionsSuccessStatus: 200,
     origin: process.env.GLIMERE_BASE_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // You can specify allowed methods
-    credentials: true // If you need to allow cookies or authentication headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 };
 
 app.use(cors(corsOptions));
