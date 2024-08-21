@@ -20,7 +20,7 @@ router.get('/', getUsers);
 router.get('/:id', getUser);
 
 // DELETE a User
-router.delete('/:id', deleteUser);
+router.delete('/:id', authMiddleware, deleteUser);
 
 // UPDATE a User
 router.patch('/:id', updateUser);

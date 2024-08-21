@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Auth = require('../models/authModel');
-const User = require('../models/userModel'); // Assuming this is the correct path
+const User = require('../models/userModel');
+const mongoose = require("mongoose");
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -34,7 +35,6 @@ const registerUser = async (req, res) => {
         });
         await userAuth.save();
 
-        // Create corresponding user in the User collection with the same _id
         const user = new User({
             _id: userAuth._id, // Use the same _id as the auth collection
             user_id: userAuth._id, 
@@ -65,7 +65,7 @@ const registerUser = async (req, res) => {
     }
 };
 
-// Login User (unchanged)
+// Login User
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 

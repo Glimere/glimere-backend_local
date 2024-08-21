@@ -7,7 +7,7 @@ const authSchema = new mongoose.Schema({
   phone_number: {type: Number, required: true },
   role: {
     type: String,
-    enum: ['user', 'admin', 'seller'],
+    enum: ['user', 'admin', 'seller', 'super_admin'],
     default: 'user'
   }
 },
