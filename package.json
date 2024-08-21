@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "pm2 start server.js",
+    "dev": "nodemon server.js",
+    "prod": "pm2 start server.js",
     "push:all": "git push dev main && git push origin main && git push prod main && git push staging main"
   },
   "keywords": [],

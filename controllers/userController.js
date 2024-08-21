@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Auth = require('../models/authModel');
 const mongoose = require('mongoose');
 
 // Get all users
@@ -31,12 +32,23 @@ const deleteUser = async (req, res) => {
         return res.status(404).json({ error: 'No such user' });
     }
 
-    const user = await User.findOneAndDelete({ _id: id });
-    if (!user) {
-        return res.status(404).json({ error: 'No such user' });
-    }
+    try {
+        // Delete the user from the User collection
+        const user = await User.findOneAndDelete({ _id: id });
+        if (!user) {
+            return res.status(404).json({ error: 'No such user' });
+        }
 
-    res.status(200).json({ message: 'User deleted successfully', user });
+        // Delete the corresponding auth details from the Auth collection
+        const auth = await Auth.findOneAndDelete({ _id: id });
+        if (!auth) {
+            return res.status(404).json({ error: 'No corresponding auth details found' });
+        }
+
+        res.status(200).json({ message: 'User and authentication details deleted successfully', user, auth });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 // Update a user

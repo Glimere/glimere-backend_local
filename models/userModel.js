@@ -10,11 +10,11 @@ const userSchema = new Schema({
     },
     first_name: {
         type: String,
-        required: true
+        required: false
     },
     last_name: {
         type: String,
-        required: true
+        required: false
     },
     email: {
         type: String,
@@ -29,23 +29,23 @@ const userSchema = new Schema({
     address: {
         street: {
             type: String,
-            required: true
+            required: false
         },
         city: {
             type: String,
-            required: true
+            required: false
         },
         state: {
             type: String,
-            required: true
+            required: false
         },
         postal_code: {
             type: String,
-            required: true
+            required: false
         },
         country: {
             type: String,
-            required: true
+            required: false
         }
     },
     profile_image: {

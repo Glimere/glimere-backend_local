@@ -26,6 +26,7 @@ const registerUser = async (req, res) => {
 
         // Create user in the Auth collection
         const userAuth = new Auth({
+            _id: new mongoose.Types.ObjectId(), // Create a new ObjectId
             username,
             email,
             password: hashedPassword,
@@ -33,8 +34,9 @@ const registerUser = async (req, res) => {
         });
         await userAuth.save();
 
-        // Create corresponding user in the User collection
+        // Create corresponding user in the User collection with the same _id
         const user = new User({
+            _id: userAuth._id, // Use the same _id as the auth collection
             user_id: userAuth._id, 
             first_name: '', // Assuming this will be updated later
             last_name: '',  // Assuming this will be updated later
@@ -63,7 +65,7 @@ const registerUser = async (req, res) => {
     }
 };
 
-// Login User
+// Login User (unchanged)
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
 
