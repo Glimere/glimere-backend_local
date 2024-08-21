@@ -6,8 +6,12 @@ const {
     deleteUser,
     updateUser,
 } = require('../controllers/userController');
+const authMiddleware = require('../middlewares/authMiddleware');
+
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 // GET all Users
 router.get('/', getUsers);
