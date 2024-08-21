@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Auth',
+        required: true
+    },
     first_name: {
         type: String,
         required: true
