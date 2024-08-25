@@ -18,12 +18,12 @@ const createSuperAdmin = async () => {
             useUnifiedTopology: true,
         });
 
-        const hashedPassword = await bcrypt.hash('SuperAdminPassword', 10); // Use a secure password
+        const hashedPassword = await bcrypt.hash('Glimere.196500', 10); // Use a secure password
         const superAdmin = new Auth({
-            username: 'superadmin',
-            email: 'superadmin@example.com',
+            username: 'Admin',
+            email: 'josephakinwole@glimere.com',
             password: hashedPassword,
-            phone_number: 1234567890,
+            phone_number: 7036857945,
             role: 'super_admin',
         });
 

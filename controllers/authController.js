@@ -13,7 +13,7 @@ const generateToken = (id) => {
 
 // Register User
 const registerUser = async (req, res) => {
-    const { username, email, password, phone_number } = req.body;
+    const {first_name, last_name, email, password, phone_number, role, address } = req.body;
 
     try {
         // Check if user exists
@@ -27,27 +27,30 @@ const registerUser = async (req, res) => {
 
         // Create user in the Auth collection
         const userAuth = new Auth({
-            _id: new mongoose.Types.ObjectId(), // Create a new ObjectId
-            username,
+            _id: new mongoose.Types.ObjectId(),
+            first_name,
+            last_name, 
             email,
             password: hashedPassword,
             phone_number,
+            role,
+            address, 
         });
         await userAuth.save();
 
         const user = new User({
-            _id: userAuth._id, // Use the same _id as the auth collection
-            user_id: userAuth._id, 
-            first_name: '', // Assuming this will be updated later
-            last_name: '',  // Assuming this will be updated later
+            _id: userAuth._id,
+            user_id: userAuth._id,
+            first_name,
+            last_name, 
             email,
             phone_number,
             address: {
-                street: '', // Assuming this will be updated later
-                city: '',   // Assuming this will be updated later
-                state: '',  // Assuming this will be updated later
-                postal_code: '', // Assuming this will be updated later
-                country: '' // Assuming this will be updated later
+                street: address?.street || '', 
+                city: address?.city || '', 
+                state: address?.state || '',
+                postal_code: address?.postal_code || '',
+                country: address?.country || '',
             }
         });
         await user.save();
