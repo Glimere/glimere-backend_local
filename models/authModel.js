@@ -49,6 +49,10 @@ const authSchema = new mongoose.Schema(
         type: String,
         required: false,
       },
+      nearest_bus_stop: {
+        type: String,
+        required: false
+    }
     },
   },
   { timestamps: true }

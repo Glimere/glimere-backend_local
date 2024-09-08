@@ -46,6 +46,10 @@ const userSchema = new Schema({
         country: {
             type: String,
             required: false
+        },
+        nearest_bus_stop: {
+            type: String,
+            required: false
         }
     },
     profile_image: {

@@ -34,7 +34,7 @@ const registerUser = async (req, res) => {
             password: hashedPassword,
             phone_number,
             role,
-            address, 
+            address,
         });
         await userAuth.save();
 
@@ -51,6 +51,7 @@ const registerUser = async (req, res) => {
                 state: address?.state || '',
                 postal_code: address?.postal_code || '',
                 country: address?.country || '',
+                nearest_bus_stop: address?.nearest_bus_stop || '',
             }
         });
         await user.save();
