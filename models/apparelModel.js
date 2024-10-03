@@ -40,28 +40,38 @@ const apparelSchema = new Schema({
         required: true
     },
     brand: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Brand',
         required: true
     },
     main_category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MainCategory',
         required: true
     },
     sub_categories: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SubCategory'
     }],
     sub_subcategories: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SubSubCategory'
     }],
     materials: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Material'
     }],
     models: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Model'
     }],
-    sizes: [{
-        type: String
-    }]
+    sizing_type: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Size'
+    },
+    sizes: [{type: String,
+        required: true}]
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Apparel', apparelSchema);
