@@ -17,8 +17,36 @@ const getApparels = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
-      .populate("materials")
-      .populate("models")
+      .populate({
+        path: "materials",
+        populate: [
+          {
+            path: "textures",
+            model: "Texture" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "colorVariants",
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
+      })
+      .populate({
+        path: "models",
+        populate: [
+          {
+            path: "textures",
+            model: "Upload" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "file",
+            model: "Upload" // Ensure this is the correct model name for files
+          },
+          {
+            path: "animations",
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
+      })
       .populate({
         path: "sizing_type",
         model: "Size",
@@ -62,8 +90,36 @@ const getApparel = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
-      .populate("materials")
-      .populate("models")
+      .populate({
+        path: "materials",
+        populate: [
+          {
+            path: "textures",
+            model: "Texture" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "colorVariants",
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
+      })
+      .populate({
+        path: "models",
+        populate: [
+          {
+            path: "textures",
+            model: "Upload" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "file",
+            model: "Upload" // Ensure this is the correct model name for files
+          },
+          {
+            path: "animations",
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
+      })
       .populate({
         path: "sizing_type",
         model: "Size",
@@ -199,8 +255,36 @@ const updateApparel = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
-      .populate("materials")
-      .populate("models")
+      .populate({
+        path: "materials",
+        populate: [
+          {
+            path: "textures",
+            model: "Texture" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "colorVariants",
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
+      })
+      .populate({
+        path: "models",
+        populate: [
+          {
+            path: "textures",
+            model: "Upload" // Ensure this is the correct model name for textures
+          },
+          {
+            path: "file",
+            model: "Upload" // Ensure this is the correct model name for files
+          },
+          {
+            path: "animations",
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
+      })
       .populate({
         path: "sizing_type",
         model: "Size",
