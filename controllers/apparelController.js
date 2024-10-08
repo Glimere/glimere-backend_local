@@ -22,7 +22,16 @@ const getApparels = async (req, res) => {
         populate: [
           {
             path: "textures",
-            model: "Texture" // Ensure this is the correct model name for textures
+            populate: [
+              {
+                path: "thumbnail",
+                model: "Upload"
+              },
+              {
+                path: "patternFile",
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
@@ -95,7 +104,16 @@ const getApparel = async (req, res) => {
         populate: [
           {
             path: "textures",
-            model: "Texture" // Ensure this is the correct model name for textures
+            populate: [
+              {
+                path: "thumbnail",
+                model: "Upload"
+              },
+              {
+                path: "patternFile",
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
@@ -260,7 +278,16 @@ const updateApparel = async (req, res) => {
         populate: [
           {
             path: "textures",
-            model: "Texture" // Ensure this is the correct model name for textures
+            populate: [
+              {
+                path: "thumbnail",
+                model: "Upload"
+              },
+              {
+                path: "patternFile",
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
