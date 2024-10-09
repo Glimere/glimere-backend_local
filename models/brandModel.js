@@ -22,6 +22,10 @@ const brandSchema = new Schema({
         required: true,
         unique: true
     },
+    apparels: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Apparel'
+    }],
     description: {
         type: String,
         required: true

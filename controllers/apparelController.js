@@ -17,6 +17,7 @@ const getApparels = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
+      .populate("apparel_images")
       .populate({
         path: "materials",
         populate: [
@@ -99,6 +100,7 @@ const getApparel = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
+      .populate("apparel_images")
       .populate({
         path: "materials",
         populate: [
@@ -173,6 +175,7 @@ const getApparel = async (req, res) => {
 const createApparel = async (req, res) => {
   const {
     apparel_name,
+    apparel_images,
     apparel_desc,
     apparel_price,
     discounted_price,
@@ -194,6 +197,7 @@ const createApparel = async (req, res) => {
   try {
     const apparel = await Apparel.create({
       apparel_name,
+      apparel_images,
       apparel_desc,
       apparel_price,
       discounted_price,
@@ -273,6 +277,7 @@ const updateApparel = async (req, res) => {
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
+      .populate("apparel_images")
       .populate({
         path: "materials",
         populate: [
@@ -330,6 +335,7 @@ const updateApparel = async (req, res) => {
 
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
+
     }
 
     if (apparel.sizing_type) {

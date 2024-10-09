@@ -7,6 +7,11 @@ const apparelSchema = new Schema({
         type: String,
         required: true
     },
+    apparel_images: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Upload', 
+        required: true 
+    }],
     apparel_desc: {
         type: String,
         required: true
