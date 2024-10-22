@@ -1,9 +1,10 @@
 const Brand = require('../models/brandModel');
 const Apparel = require('../models/apparelModel'); // Assuming you have an Apparel model
+const Upload = require('../models/uploadModel'); // Assuming you have an Upload model
 
 const getAllBrands = async (req, res) => {
     try {
-        const brands = await Brand.find().populate('apparels');
+        const brands = await Brand.find().populate('apparels').populate('logo');
         res.status(200).json(brands);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -13,7 +14,7 @@ const getAllBrands = async (req, res) => {
 const getBrand = async (req, res) => {
     try {
         const { id } = req.params;
-        const brand = await Brand.findById(id).populate('apparels');
+        const brand = await Brand.findById(id).populate('apparels').populate('logo');
 
         if (!brand) {
             return res.status(404).json({ message: 'Brand not found.' });
@@ -27,16 +28,10 @@ const getBrand = async (req, res) => {
 
 const createBrand = async (req, res) => {
     try {
-        const { name, description, logo, website, country, established, contactInfo, socialMediaLinks } = req.body;
-        const newBrand = new Brand({ name, description, logo, website, country, established, contactInfo, socialMediaLinks });
+        const { name, description, logo, website, country, established, contactInfo, socialMediaLinks, apparels, views } = req.body;
+        const newBrand = new Brand({ name, description, logo, website, country, established, contactInfo, socialMediaLinks, apparels: [], views });
 
         // Save the brand first
-        await newBrand.save();
-
-        // Associate apparels with the new brand
-        const apparels = await Apparel.find({ brand: newBrand._id });
-
-        newBrand.apparels = apparels.map(apparel => apparel._id);
         await newBrand.save();
 
         res.status(201).json({ message: 'Brand created successfully.', brand: newBrand });
@@ -48,7 +43,7 @@ const createBrand = async (req, res) => {
 const updateBrand = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, logo, website, country, established, contactInfo, socialMediaLinks } = req.body;
+        const { name, description, logo, website, country, established, contactInfo, socialMediaLinks, apparels, views } = req.body;
 
         const brand = await Brand.findById(id);
 
@@ -64,13 +59,9 @@ const updateBrand = async (req, res) => {
         brand.established = established || brand.established;
         brand.contactInfo = contactInfo || brand.contactInfo;
         brand.socialMediaLinks = socialMediaLinks || brand.socialMediaLinks;
+        brand.apparels = apparels || brand.apparels;
+        brand.views = views || brand.views;
 
-        await brand.save();
-
-        // Associate apparels with the updated brand
-        const apparels = await Apparel.find({ brand: brand._id });
-
-        brand.apparels = apparels.map(apparel => apparel._id);
         await brand.save();
 
         res.status(200).json({ message: 'Brand updated successfully.', brand });

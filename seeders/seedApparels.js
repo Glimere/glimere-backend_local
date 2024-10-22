@@ -37,6 +37,7 @@ const seedApparels = async (numRecords) => {
   });
 
   const apparels = [];
+  const apparelTypes = ['dresses', 'top', 'bottom', 'full wears', 'outer wears', 'accessories'];
 
   // Generate random data
   for (let i = 0; i < numRecords; i++) {
@@ -53,7 +54,7 @@ const seedApparels = async (numRecords) => {
       discount_start_date: faker.date.past(),
       discount_end_date: faker.date.future(),
       is_discounted: faker.datatype.boolean(),
-      apparel_type: faker.commerce.productAdjective(),
+      apparel_type: faker.helpers.arrayElement(apparelTypes), // Random apparel type from the fixed list
       brand: brandId,
       main_category: mainCategoryId,
       sub_categories: subCategoryIds,
@@ -62,6 +63,9 @@ const seedApparels = async (numRecords) => {
       models: modelIds,
       sizing_type: sizingTypeId,
       sizes: sizeIds,
+      views: faker.number.int({ min: 0, max: 1000 }), // Random number of views
+      is_featured: faker.datatype.boolean(), // Random boolean for featured
+      number_sold: faker.number.int({ min: 0, max: 1000 }) // Random number of sold items
     });
   }
 
@@ -79,7 +83,6 @@ const seedApparels = async (numRecords) => {
     mongoose.connection.close();
   }
 };
-
 
 // Call the seed function with the number of records you want to create
 seedApparels(50); // Example: generate 50 records

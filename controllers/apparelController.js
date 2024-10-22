@@ -191,7 +191,10 @@ const createApparel = async (req, res) => {
     materials,
     models,
     sizing_type,
-    sizes
+    sizes,
+    views,
+    is_featured,
+    number_sold
   } = req.body;
 
   try {
@@ -213,7 +216,10 @@ const createApparel = async (req, res) => {
       materials,
       models,
       sizing_type,
-      sizes
+      sizes,
+      views,
+      is_featured,
+      number_sold
     });
 
     // Update the categories to reference the new apparel item

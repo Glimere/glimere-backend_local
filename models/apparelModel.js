@@ -42,7 +42,8 @@ const apparelSchema = new Schema({
     },
     apparel_type: {
         type: String,
-        required: true
+        required: true,
+        enum: ['dresses', 'top', 'bottom', 'full wears', 'outer wears', 'accessories'] // Added enum validator
     },
     brand: {
         type: mongoose.Schema.Types.ObjectId,
@@ -74,9 +75,22 @@ const apparelSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Size'
     },
-    sizes: [{type: String,
-        required: true}]
-
+    sizes: [{
+        type: String,
+        required: true
+    }],
+    views: {
+        type: Number,
+        default: 0
+    },
+    is_featured: {
+        type: Boolean,
+        default: false
+    },
+    number_sold: {
+        type: Number,
+        default: 0
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Apparel', apparelSchema);

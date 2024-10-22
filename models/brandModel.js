@@ -31,7 +31,8 @@ const brandSchema = new Schema({
         required: true
     },
     logo: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Upload',
         required: true
     },
     website: {
@@ -67,6 +68,10 @@ const brandSchema = new Schema({
             type: String,
             required: false
         }
+    },
+    views: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true });
 
