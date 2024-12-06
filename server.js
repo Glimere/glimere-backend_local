@@ -30,7 +30,7 @@ app.use(express.json());
 
 const corsOptions = {
     optionsSuccessStatus: 200,
-    origin: process.env.GLIMERE_BASE_URL,
+    origin: process.env.GLIMERE_SITE_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 };
