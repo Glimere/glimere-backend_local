@@ -20,6 +20,7 @@ const modelRoutes = require('./routes/model');
 const uploadRoutes = require('./routes/upload');
 const materialRoutes = require('./routes/material');
 const colorRoutes = require('./routes/color');
+const waitlistRoutes = require('./routes/waitlist')
 
 // Express app
 const app = express();
@@ -65,6 +66,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/models', modelRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/color', colorRoutes);
+app.use('/api/waitlist', waitlistRoutes);
 
 // Connect to db
 mongoose.connect(process.env.MONGO_URL)
