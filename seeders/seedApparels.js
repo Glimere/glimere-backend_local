@@ -4,7 +4,7 @@ const { faker } = require('@faker-js/faker');
 const Apparel = require('../models/apparelModel'); // Adjust the path based on your structure
 
 // Replace these with your actual ObjectIds
-const brandId = "66fbac29324627adb1497fa0";
+const brandId = "6716ea55f7dfc798cf8478c4";
 const mainCategoryId = "66fba3b20bf4f4e05a6aa8ec";
 const subCategoryIds = [
   "66fbad81324627adb1497fa2",
