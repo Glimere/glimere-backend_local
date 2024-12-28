@@ -33,7 +33,7 @@ const brandSchema = new Schema({
     logo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Upload',
-        required: true
+        required: false
     },
     website: {
         type: String,

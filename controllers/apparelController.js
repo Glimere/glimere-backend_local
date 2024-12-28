@@ -18,9 +18,9 @@ const getApparels = async (req, res) => {
         populate: [
           {
             path: "logo",
-            model: "Upload",
+            model: "Upload"
           },
-        ],
+        ]
       })
       .populate("main_category")
       .populate("sub_categories")
@@ -34,36 +34,36 @@ const getApparels = async (req, res) => {
             populate: [
               {
                 path: "thumbnail",
-                model: "Upload",
+                model: "Upload"
               },
               {
                 path: "patternFile",
-                model: "Upload",
-              },
-            ], // Ensure this is the correct model name for textures
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
-            model: "Color", // Ensure this is the correct model name for color variants
-          },
-        ],
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
       })
       .populate({
         path: "models",
         populate: [
           {
             path: "textures",
-            model: "Upload", // Ensure this is the correct model name for textures
+            model: "Upload" // Ensure this is the correct model name for textures
           },
           {
             path: "file",
-            model: "Upload", // Ensure this is the correct model name for files
+            model: "Upload" // Ensure this is the correct model name for files
           },
           {
             path: "animations",
-            model: "Upload", // Ensure this is the correct model name for animations
-          },
-        ],
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
       })
       .populate({
         path: "sizing_type",
@@ -81,14 +81,10 @@ const getApparels = async (req, res) => {
       })
       .populate("sizes");
 
-    apparels.forEach((apparel) => {
+    apparels.forEach(apparel => {
       if (apparel.sizing_type) {
-        apparel.sizing_type.male = apparel.sizing_type.male.filter((maleSize) =>
-          apparel.sizes.includes(maleSize._id.toString())
-        );
-        apparel.sizing_type.female = apparel.sizing_type.female.filter(
-          (femaleSize) => apparel.sizes.includes(femaleSize._id.toString())
-        );
+        apparel.sizing_type.male = apparel.sizing_type.male.filter(maleSize => apparel.sizes.includes(maleSize._id.toString()));
+        apparel.sizing_type.female = apparel.sizing_type.female.filter(femaleSize => apparel.sizes.includes(femaleSize._id.toString()));
       }
     });
 
@@ -108,15 +104,15 @@ const getApparel = async (req, res) => {
 
   try {
     const apparel = await Apparel.findById(id)
-      .populate({
-        path: "brand",
-        populate: [
-          {
-            path: "logo",
-            model: "Upload",
-          },
-        ],
-      })
+    .populate({
+      path: "brand",
+      populate: [
+        {
+          path: "logo",
+          model: "Upload"
+        },
+      ]
+    })
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
@@ -129,36 +125,36 @@ const getApparel = async (req, res) => {
             populate: [
               {
                 path: "thumbnail",
-                model: "Upload",
+                model: "Upload"
               },
               {
                 path: "patternFile",
-                model: "Upload",
-              },
-            ], // Ensure this is the correct model name for textures
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
-            model: "Color", // Ensure this is the correct model name for color variants
-          },
-        ],
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
       })
       .populate({
         path: "models",
         populate: [
           {
             path: "textures",
-            model: "Upload", // Ensure this is the correct model name for textures
+            model: "Upload" // Ensure this is the correct model name for textures
           },
           {
             path: "file",
-            model: "Upload", // Ensure this is the correct model name for files
+            model: "Upload" // Ensure this is the correct model name for files
           },
           {
             path: "animations",
-            model: "Upload", // Ensure this is the correct model name for animations
-          },
-        ],
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
       })
       .populate({
         path: "sizing_type",
@@ -181,12 +177,8 @@ const getApparel = async (req, res) => {
     }
 
     if (apparel.sizing_type) {
-      apparel.sizing_type.male = apparel.sizing_type.male.filter((maleSize) =>
-        apparel.sizes.includes(maleSize._id.toString())
-      );
-      apparel.sizing_type.female = apparel.sizing_type.female.filter(
-        (femaleSize) => apparel.sizes.includes(femaleSize._id.toString())
-      );
+      apparel.sizing_type.male = apparel.sizing_type.male.filter(maleSize => apparel.sizes.includes(maleSize._id.toString()));
+      apparel.sizing_type.female = apparel.sizing_type.female.filter(femaleSize => apparel.sizes.includes(femaleSize._id.toString()));
     }
 
     res.status(200).json(apparel);
@@ -218,7 +210,7 @@ const createApparel = async (req, res) => {
     sizes,
     views,
     is_featured,
-    number_sold,
+    number_sold
   } = req.body;
 
   try {
@@ -243,7 +235,7 @@ const createApparel = async (req, res) => {
       sizes,
       views,
       is_featured,
-      number_sold,
+      number_sold
     });
 
     // Update the categories to reference the new apparel item
@@ -303,15 +295,15 @@ const updateApparel = async (req, res) => {
       },
       { new: true }
     )
-      .populate({
-        path: "brand",
-        populate: [
-          {
-            path: "logo",
-            model: "Upload",
-          },
-        ],
-      })
+    .populate({
+      path: "brand",
+      populate: [
+        {
+          path: "logo",
+          model: "Upload"
+        },
+      ]
+    })
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
@@ -324,36 +316,36 @@ const updateApparel = async (req, res) => {
             populate: [
               {
                 path: "thumbnail",
-                model: "Upload",
+                model: "Upload"
               },
               {
                 path: "patternFile",
-                model: "Upload",
-              },
-            ], // Ensure this is the correct model name for textures
+                model: "Upload"
+              }
+            ] // Ensure this is the correct model name for textures
           },
           {
             path: "colorVariants",
-            model: "Color", // Ensure this is the correct model name for color variants
-          },
-        ],
+            model: "Color" // Ensure this is the correct model name for color variants
+          }
+        ]
       })
       .populate({
         path: "models",
         populate: [
           {
             path: "textures",
-            model: "Upload", // Ensure this is the correct model name for textures
+            model: "Upload" // Ensure this is the correct model name for textures
           },
           {
             path: "file",
-            model: "Upload", // Ensure this is the correct model name for files
+            model: "Upload" // Ensure this is the correct model name for files
           },
           {
             path: "animations",
-            model: "Upload", // Ensure this is the correct model name for animations
-          },
-        ],
+            model: "Upload" // Ensure this is the correct model name for animations
+          }
+        ]
       })
       .populate({
         path: "sizing_type",
@@ -373,15 +365,12 @@ const updateApparel = async (req, res) => {
 
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
+
     }
 
     if (apparel.sizing_type) {
-      apparel.sizing_type.male = apparel.sizing_type.male.filter((maleSize) =>
-        apparel.sizes.includes(maleSize._id.toString())
-      );
-      apparel.sizing_type.female = apparel.sizing_type.female.filter(
-        (femaleSize) => apparel.sizes.includes(femaleSize._id.toString())
-      );
+      apparel.sizing_type.male = apparel.sizing_type.male.filter(maleSize => apparel.sizes.includes(maleSize._id.toString()));
+      apparel.sizing_type.female = apparel.sizing_type.female.filter(femaleSize => apparel.sizes.includes(femaleSize._id.toString()));
     }
 
     res.status(200).json(apparel);
