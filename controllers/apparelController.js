@@ -6,6 +6,7 @@ const Material = require("../models/materialModel");
 const Model = require("../models/modelModel");
 const Size = require("../models/sizeModel");
 const Apparel = require("../models/apparelModel");
+const Review = require("../models/reviewModel");
 const mongoose = require("mongoose");
 
 // Get all apparels
@@ -79,7 +80,14 @@ const getApparels = async (req, res) => {
           },
         ],
       })
-      .populate("sizes");
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User" // Ensure this is the correct model name for users
+        }
+      });
 
     apparels.forEach(apparel => {
       if (apparel.sizing_type) {
@@ -104,15 +112,15 @@ const getApparel = async (req, res) => {
 
   try {
     const apparel = await Apparel.findById(id)
-    .populate({
-      path: "brand",
-      populate: [
-        {
-          path: "logo",
-          model: "Upload"
-        },
-      ]
-    })
+      .populate({
+        path: "brand",
+        populate: [
+          {
+            path: "logo",
+            model: "Upload"
+          },
+        ]
+      })
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
@@ -170,7 +178,14 @@ const getApparel = async (req, res) => {
           },
         ],
       })
-      .populate("sizes");
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User" // Ensure this is the correct model name for users
+        }
+      });
 
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
@@ -235,7 +250,9 @@ const createApparel = async (req, res) => {
       sizes,
       views,
       is_featured,
-      number_sold
+      number_sold,
+      average_rating: 0,
+      total_reviews: 0
     });
 
     // Update the categories to reference the new apparel item
@@ -295,15 +312,15 @@ const updateApparel = async (req, res) => {
       },
       { new: true }
     )
-    .populate({
-      path: "brand",
-      populate: [
-        {
-          path: "logo",
-          model: "Upload"
-        },
-      ]
-    })
+      .populate({
+        path: "brand",
+        populate: [
+          {
+            path: "logo",
+            model: "Upload"
+          },
+        ]
+      })
       .populate("main_category")
       .populate("sub_categories")
       .populate("sub_subcategories")
@@ -361,11 +378,17 @@ const updateApparel = async (req, res) => {
           },
         ],
       })
-      .populate("sizes");
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User" // Ensure this is the correct model name for users
+        }
+      });
 
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
-
     }
 
     if (apparel.sizing_type) {
@@ -380,9 +403,9 @@ const updateApparel = async (req, res) => {
 };
 
 module.exports = {
-  createApparel,
   getApparels,
   getApparel,
+  createApparel,
   deleteApparel,
   updateApparel,
 };

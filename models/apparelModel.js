@@ -90,7 +90,19 @@ const apparelSchema = new Schema({
     number_sold: {
         type: Number,
         default: 0
-    }
+    },
+    average_rating: {
+        type: Number,
+        default: 0
+    },
+    total_reviews: {
+        type: Number,
+        default: 0
+    },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Apparel', apparelSchema);
