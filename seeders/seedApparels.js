@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker');
 const Apparel = require('../models/apparelModel'); // Adjust the path based on your structure
+const Review = require('../models/reviewModel'); // Add the review model
 
 // Replace these with your actual ObjectIds
 const brandId = "6716ea55f7dfc798cf8478c4";
@@ -72,9 +73,25 @@ const seedApparels = async (numRecords) => {
   try {
     // Remove existing data
     await Apparel.deleteMany({});
+    await Review.deleteMany({});
 
     // Insert sample data
-    await Apparel.insertMany(apparels);
+    const insertedApparels = await Apparel.insertMany(apparels);
+
+    const reviews = [];
+    insertedApparels.forEach(apparel => {
+      const numReviews = faker.number.int({ min: 1, max: 10 });
+      for (let j = 0; j < numReviews; j++) {
+        reviews.push({
+          apparel: apparel._id,
+          user: mongoose.Types.ObjectId(), // Replace with actual user IDs if you have a user collection
+          rating: faker.number.int({ min: 1, max: 5 }),
+          comment: faker.lorem.sentence(),
+        });
+      }
+    });
+
+    await Review.insertMany(reviews);
     console.log('Data seeded successfully');
   } catch (error) {
     console.error('Error seeding data:', error);
