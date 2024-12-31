@@ -5,7 +5,7 @@ const {
   removeItemFromCart,
   updateItemQuantity
 } = require('../controllers/cartController');
-const authMiddleware = require('../middlewares/authMiddlewareCart');
+const authMiddleware = require('../middlewares/authMiddlewareAlt');
 
 const router = express.Router();
 
