@@ -22,6 +22,7 @@ const materialRoutes = require("./routes/material");
 const colorRoutes = require("./routes/color");
 const waitlistRoutes = require("./routes/waitlist");
 const reviewRoutes = require("./routes/review");
+const cartRoutes = require("./routes/cart");
 
 // Express app
 const app = express();
@@ -77,6 +78,7 @@ app.use("/api/material", materialRoutes);
 app.use("/api/color", colorRoutes);
 app.use("/api/waitlist", waitlistRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Connect to db
 mongoose

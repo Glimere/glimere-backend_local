@@ -87,8 +87,8 @@ const getApparels = async (req, res) => {
           path: "user",
           model: "User",
         },
-      });
-
+      })
+      .populate("full_wear");
     // Loop through each apparel and fetch reviews
     for (let apparel of apparels) {
       if (apparel.sizing_type) {
@@ -174,8 +174,16 @@ const getApparel = async (req, res) => {
           { path: "female", model: "Size" },
         ],
       })
-      .populate("sizes");
-
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      })
+      .populate("full_wear");
+      
     // If the apparel is not found
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
@@ -399,8 +407,8 @@ const updateApparel = async (req, res) => {
           path: "user",
           model: "User", // Ensure this is the correct model name for users
         },
-      });
-
+      })
+      .populate("full_wear");
     if (!apparel) {
       return res.status(404).json({ error: "No such apparel" });
     }
