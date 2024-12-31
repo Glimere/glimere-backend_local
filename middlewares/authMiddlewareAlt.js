@@ -2,7 +2,7 @@ const User = require('../models/userModel'); // Ensure you're using the correct 
 const jwt = require('jsonwebtoken');
 const Auth = require('../models/authModel');
 
-const authMiddlewareCart = async (req, res, next) => {
+const authMiddlewareAlt = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
 
     if (!token) {
@@ -26,4 +26,4 @@ const authMiddlewareCart = async (req, res, next) => {
     }
 };
 
-module.exports = authMiddlewareCart;
+module.exports = authMiddlewareAlt;
