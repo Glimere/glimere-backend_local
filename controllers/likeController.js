@@ -42,8 +42,18 @@ getApparelLikes = async (req, res) => {
   }
 };
 
+getUserLikes = async (req, res) => {
+  try {
+      const likes = await Like.find({ userId: req.params.userId }).populate('apparelId');
+      res.status(200).json(likes);
+  } catch (err) {
+      res.status(500).send(err.message);
+  }
+};
+
 module.exports = {
   likeApparel,
   unlikeApparel,
   getApparelLikes,
+  getUserLikes
 };

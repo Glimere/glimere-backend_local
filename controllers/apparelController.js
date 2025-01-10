@@ -446,10 +446,39 @@ const updateApparel = async (req, res) => {
   }
 };
 
+const searchApparels = async (req, res) => {
+  try {
+      const searchTerm = req.query.searchTerm || "";
+      const category = req.query.category || null;
+      const priceMin = parseFloat(req.query.priceMin) || 0;
+      const priceMax = parseFloat(req.query.priceMax) || Number.MAX_VALUE;
+
+      const filters = {
+          name: { $regex: searchTerm, $options: "i" }, // Case-insensitive regex for name
+          price: { $gte: priceMin, $lte: priceMax },   // Filter by price range
+      };
+
+      if (category) {
+          filters.category = category;
+      }
+
+      const apparels = await Apparel.find(filters).sort({ createdAt: -1 });
+
+      if (apparels.length === 0) {
+          return res.status(404).json({ message: "No apparels found" });
+      }
+
+      res.status(200).json(apparels);
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getApparels,
   getApparel,
   createApparel,
   deleteApparel,
   updateApparel,
+  searchApparels
 };

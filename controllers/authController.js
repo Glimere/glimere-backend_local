@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 // Generate JWT Token
 const generateToken = (id) => {
     return jwt.sign({ userId: id }, process.env.SECRET_KEY, {
-        expiresIn: '1h',
+        expiresIn: '5h',
     });
 };
 

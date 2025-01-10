@@ -5,10 +5,13 @@ const {
     getApparels,
     getApparel,
     deleteApparel,
-    updateApparel
+    updateApparel,
+    searchApparels
 } = require('../controllers/apparelController')
 
 const router = express.Router();
+
+router.get('/search', searchApparels);
 
 //GET all Apparels
 router.get('/', getApparels)

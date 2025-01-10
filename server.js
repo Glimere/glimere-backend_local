@@ -5,6 +5,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const responseFormatter = require("./middlewares/formatter");
 const path = require("path"); // Import the path module
+const { Server } = require("socket.io"); // Import Socket.IO
+const http = require("http"); // Import HTTP for wrapping Express
 
 // Import routes
 const apparelRoutes = require("./routes/apparel");
@@ -24,9 +26,19 @@ const waitlistRoutes = require("./routes/waitlist");
 const reviewRoutes = require("./routes/review");
 const cartRoutes = require("./routes/cart");
 const likeRoutes = require("./routes/like");
+const shippingRoutes = require("./routes/shipping");
+const cardRoutes = require("./routes/card");
+const orderRoutes = require("./routes/order");
 
 // Express app
 const app = express();
+const server = http.createServer(app); // Wrap Express with HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: [process.env.GLIMERE_SITE_URL, "http://localhost:3000"], // Allow frontend origins
+    methods: ["GET", "POST"],
+  },
+});
 
 // Middleware
 app.use(express.json());
@@ -81,13 +93,43 @@ app.use("/api/waitlist", waitlistRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/like", likeRoutes);
+app.use("/api/shipping", shippingRoutes);
+app.use("/api/card", cardRoutes);
+app.use("/api/order", orderRoutes);
+
+// WebSocket Logic
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+
+  // Emit an event to the client on connection
+  socket.emit("welcome", { message: "Connected to WebSocket Server!" });
+
+  // Example: Broadcasting apparel updates
+  socket.on("request_apparel_update", () => {
+    console.log("Apparel update requested by:", socket.id);
+
+    // Simulated data (replace with real database query or logic)
+    const apparelData = {
+      id: 1,
+      name: "Stylish Jacket",
+      price: 120.0,
+    };
+
+    io.emit("apparel_update", apparelData); // Broadcast update to all clients
+  });
+
+  // Disconnect logic
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
 
 // Connect to db
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    // Listen for requests
-    app.listen(process.env.PORT, () => {
+    // Start server
+    server.listen(process.env.PORT, () => {
       console.log(`Connected to db & Listening on port ${process.env.PORT}!`);
     });
   })

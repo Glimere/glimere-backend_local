@@ -4,13 +4,15 @@ const router = express.Router();
 const {
     likeApparel,
     unlikeApparel,
-    getApparelLikes
+    getApparelLikes,
+    getUserLikes
 } = require('../controllers/likeController');
-const authMiddleware = require('../middlewares/authMiddlewareAlt');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 
 router.post('/like', authMiddleware, likeApparel);
 router.post('/unlike', authMiddleware, unlikeApparel);
-router.get('/:apparelId', authMiddleware, getApparelLikes);
+router.get('/apparel/:apparelId', authMiddleware, getApparelLikes);
+router.get('/user/:userId', authMiddleware, getUserLikes);
 
 module.exports = router;

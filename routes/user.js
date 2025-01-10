@@ -1,17 +1,20 @@
 const express = require('express');
 
 const {
+    getCurrentUser,
     getUsers,
     getUser,
     deleteUser,
     updateUser,
 } = require('../controllers/userController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const auth = require('../middlewares/authMiddleware');
 
 
 const router = express.Router();
 
-router.use(authMiddleware);
+router.use(auth);
+
+router.get("/me", auth, getCurrentUser);
 
 // GET all Users
 router.get('/', getUsers);
@@ -20,7 +23,7 @@ router.get('/', getUsers);
 router.get('/:id', getUser);
 
 // DELETE a User
-router.delete('/:id', authMiddleware, deleteUser);
+router.delete('/:id', auth, deleteUser);
 
 // UPDATE a User
 router.patch('/:id', updateUser);

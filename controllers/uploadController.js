@@ -129,17 +129,21 @@ const deleteUpload = async (req, res) => {
 const getFileType = (mimetype) => {
     if (mimetype.startsWith('image/')) {
         return 'image';
-    } else if (mimetype.startsWith('video/')) {
+    } 
+    if (mimetype.startsWith('video/')) {
         return 'video';
-    } else if (mimetype.startsWith('audio/')) {
+    } 
+    if (mimetype.startsWith('audio/')) {
         return 'audio';
-    } else if (['model/gltf-binary', 'model/obj', 'model/fbx', 'model/gltf'].includes(mimetype)) {
+    } 
+    if (['model/gltf-binary', 'model/obj', 'model/fbx', 'model/gltf+json'].includes(mimetype)) {
         return 'model';
-    } else if (mimetype.startsWith('application/')) {
+    } 
+    if (mimetype.startsWith('application/')) {
         return 'document';
-    } else {
-        throw new Error('Unsupported file type');
-    }
+    } 
+    // Handle unexpected MIME types gracefully
+    throw new Error(`Unsupported file type: ${mimetype}`);
 };
 
 module.exports = {

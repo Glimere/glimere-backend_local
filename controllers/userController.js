@@ -2,6 +2,20 @@ const User = require("../models/userModel");
 const Auth = require("../models/authModel");
 const mongoose = require("mongoose");
 
+
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ error: "No such user" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 // Get all users
 const getUsers = async (req, res) => {
   const users = await User.find({}).sort({ createdAt: -1 });
@@ -89,6 +103,7 @@ const updateUser = async (req, res) => {
 };
 
 module.exports = {
+  getCurrentUser,
   getUsers,
   getUser,
   deleteUser,
