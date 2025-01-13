@@ -1,8 +1,16 @@
-const Shipping = require('../models/shippingModel');
+const Shipping = require("../models/shippingModel");
 
 // Add Shipping Address
 const addShippingAddress = async (req, res) => {
-  const { location_name, address, state, city, postalCode, country, phoneNumber } = req.body;
+  const {
+    location_name,
+    address,
+    state,
+    city,
+    postalCode,
+    country,
+    phoneNumber,
+  } = req.body;
 
   try {
     let shipping = await Shipping.findOne({ user: req.user._id });
@@ -11,10 +19,21 @@ const addShippingAddress = async (req, res) => {
       shipping = new Shipping({ user: req.user._id, addresses: [] });
     }
 
-    shipping.addresses.push({ location_name, state, address, city, postalCode, country, phoneNumber });
+    const newAddress = {
+      location_name,
+      state,
+      address,
+      city,
+      postalCode,
+      country,
+      phoneNumber,
+    };
+
+    shipping.addresses.push(newAddress);
     await shipping.save();
 
-    res.status(201).json(shipping);
+    // Return only the newly added address
+    res.status(201).json(shipping.addresses[shipping.addresses.length - 1]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -26,7 +45,7 @@ const getShippingAddresses = async (req, res) => {
     const shipping = await Shipping.findOne({ user: req.user._id });
 
     if (!shipping) {
-      return res.status(404).json({ error: 'No shipping addresses found' });
+      return res.status(404).json({ error: "No shipping addresses found" });
     }
 
     res.status(200).json(shipping.addresses);
@@ -38,24 +57,33 @@ const getShippingAddresses = async (req, res) => {
 // Update Shipping Address
 const updateShippingAddress = async (req, res) => {
   const { addressId } = req.params;
-  const { location_name, state, address, city, postalCode, country, phoneNumber } = req.body;
+  const {
+    location_name,
+    state,
+    address,
+    city,
+    postalCode,
+    country,
+    phoneNumber,
+  } = req.body;
 
   try {
     const shipping = await Shipping.findOne({ user: req.user._id });
 
     if (!shipping) {
-      return res.status(404).json({ error: 'Shipping addresses not found' });
+      return res.status(404).json({ error: "Shipping addresses not found" });
     }
 
     const existingAddress = shipping.addresses.id(addressId);
 
     if (!existingAddress) {
-      return res.status(404).json({ error: 'Address not found' });
+      return res.status(404).json({ error: "Address not found" });
     }
 
     // Update fields
     existingAddress.state = state || existingAddress.state;
-    existingAddress.location_name = location_name || existingAddress.location_name;
+    existingAddress.location_name =
+      location_name || existingAddress.location_name;
     existingAddress.address = address || existingAddress.address;
     existingAddress.city = city || existingAddress.city;
     existingAddress.postalCode = postalCode || existingAddress.postalCode;
@@ -63,7 +91,9 @@ const updateShippingAddress = async (req, res) => {
     existingAddress.phoneNumber = phoneNumber || existingAddress.phoneNumber;
 
     await shipping.save();
-    res.status(200).json(shipping);
+
+    // Return the updated address
+    res.status(200).json(existingAddress);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -77,7 +107,7 @@ const removeShippingAddress = async (req, res) => {
     const shipping = await Shipping.findOne({ user: req.user._id });
 
     if (!shipping) {
-      return res.status(404).json({ error: 'Shipping addresses not found' });
+      return res.status(404).json({ error: "Shipping addresses not found" });
     }
 
     const addressIndex = shipping.addresses.findIndex(
@@ -85,18 +115,25 @@ const removeShippingAddress = async (req, res) => {
     );
 
     if (addressIndex === -1) {
-      return res.status(404).json({ error: 'Address not found' });
+      return res.status(404).json({ error: "Address not found" });
     }
+
+    const removedAddress = shipping.addresses[addressIndex];
 
     // Remove the address from the array
     shipping.addresses.splice(addressIndex, 1);
     await shipping.save();
 
-    res.status(200).json({ message: 'Address removed successfully' });
+    // Return the removed address
+    res.status(200).json(removedAddress);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-
-module.exports = { addShippingAddress, getShippingAddresses, updateShippingAddress, removeShippingAddress };
+module.exports = {
+  addShippingAddress,
+  getShippingAddresses,
+  updateShippingAddress,
+  removeShippingAddress,
+};

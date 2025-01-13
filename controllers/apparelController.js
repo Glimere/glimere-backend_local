@@ -448,31 +448,68 @@ const updateApparel = async (req, res) => {
 
 const searchApparels = async (req, res) => {
   try {
-      const searchTerm = req.query.searchTerm || "";
-      const category = req.query.category || null;
-      const priceMin = parseFloat(req.query.priceMin) || 0;
-      const priceMax = parseFloat(req.query.priceMax) || Number.MAX_VALUE;
+    const {
+      searchTerm = "",
+      apparelType,
+      brand,
+      mainCategory,
+      subCategory,
+      subSubCategory,
+      materials,
+      sizingType,
+      sizes,
+      ratingMin = 0,
+      ratingMax = 5,
+      isFeatured,
+      priceMin = 0,
+      priceMax = Number.MAX_VALUE,
+    } = req.query;
 
-      const filters = {
-          name: { $regex: searchTerm, $options: "i" }, // Case-insensitive regex for name
-          price: { $gte: priceMin, $lte: priceMax },   // Filter by price range
-      };
+    // Initialize filters
+    const filters = {
+      average_rating: { $gte: parseFloat(ratingMin), $lte: parseFloat(ratingMax) },
+      apparel_price: { $gte: parseFloat(priceMin), $lte: parseFloat(priceMax) },
+    };
 
-      if (category) {
-          filters.category = category;
-      }
+    // Add filters dynamically
+    if (searchTerm) filters.apparel_name = { $regex: searchTerm, $options: "i" };
+    if (apparelType) filters.apparel_type = apparelType;
+    if (brand) filters.brand = brand;
+    if (mainCategory) filters.main_category = mainCategory;
+    if (subCategory) filters.sub_categories = subCategory;
+    if (subSubCategory) filters.sub_subcategories = subSubCategory;
+    if (materials) filters.materials = { $in: materials.split(",") }; // Match any material in the list
+    if (sizingType) filters["sizes.sizing_type"] = sizingType;
+    if (sizes) {
+      const sizeIds = sizes.split(",");
+      filters.$or = [
+        { "sizes.male": { $elemMatch: { _id: { $in: sizeIds } } } },
+        { "sizes.female": { $elemMatch: { _id: { $in: sizeIds } } } },
+      ];
+    }
+    if (isFeatured !== undefined) filters.is_featured = isFeatured === "true";
 
-      const apparels = await Apparel.find(filters).sort({ createdAt: -1 });
+    // Query the database with the filters
+    const apparels = await Apparel.find(filters)
+      .sort({ createdAt: -1 })
+      .populate("brand")
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("materials")
+      .populate("sizes");
 
-      if (apparels.length === 0) {
-          return res.status(404).json({ message: "No apparels found" });
-      }
+    if (!apparels.length) {
+      return res.status(404).json({ message: "No apparels found matching the criteria" });
+    }
 
-      res.status(200).json(apparels);
+    res.status(200).json(apparels);
   } catch (error) {
-      res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
+
+
 
 module.exports = {
   getApparels,

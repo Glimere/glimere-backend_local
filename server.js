@@ -29,6 +29,9 @@ const likeRoutes = require("./routes/like");
 const shippingRoutes = require("./routes/shipping");
 const cardRoutes = require("./routes/card");
 const orderRoutes = require("./routes/order");
+const shippingOptionRoutes = require("./routes/shippingOption");
+const courierRoutes = require("./routes/courier");
+const shippingFeeRoutes = require("./routes/shippingFee");
 
 // Express app
 const app = express();
@@ -96,6 +99,10 @@ app.use("/api/like", likeRoutes);
 app.use("/api/shipping", shippingRoutes);
 app.use("/api/card", cardRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/shipping_option", shippingOptionRoutes);
+app.use("/api/courier", courierRoutes);
+app.use("/api/shipping_fee", shippingFeeRoutes);
 
 // WebSocket Logic
 io.on("connection", (socket) => {

@@ -5,24 +5,29 @@ const {
   updateOrderStatus,
   deleteOrder,
   getOrder,
-  getOrdersByUser
+  getOrdersByUser,
+  updateOrder
 } = require('../controllers/orderController');
+const authMiddleware = require('../middlewares/authMiddleware');
+
 
 const router = express.Router();
 
 // Create an order
-router.post('/', createOrder);
+router.post('/', authMiddleware, createOrder);
 
 // Get a single order
-router.get('/:orderId', getOrder);
+router.get('/:orderId', authMiddleware, getOrder);
 
 // Get all orders for the authenticated user
-router.get('/', getOrdersByUser);
+router.get('/', authMiddleware, getOrdersByUser);
 
 // Update an order status (or payment status)
-router.patch('/:orderId', updateOrderStatus);
+router.patch('/:orderId', authMiddleware, updateOrderStatus);
 
 // Delete an order
-router.delete('/:orderId', deleteOrder);
+router.delete('/:orderId', authMiddleware, deleteOrder);
+
+router.post('/:orderId', authMiddleware, updateOrder);
 
 module.exports = router;
