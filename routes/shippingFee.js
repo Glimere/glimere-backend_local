@@ -16,11 +16,11 @@ router.post("/", createShippingFee);
 // Get all shipping fees
 router.get("/", getShippingFees);
 
+// Get shipping fee by query
+router.get("/query", getShippingFeeByQuery); // This route must come before `/:id`
+
 // Get a shipping fee by ID
 router.get("/:id", getShippingFeeById);
-
-// Get shipping fee by query
-router.get("/query", getShippingFeeByQuery); // Add this route
 
 // Update a shipping fee
 router.put("/:id", updateShippingFee);
@@ -28,6 +28,7 @@ router.put("/:id", updateShippingFee);
 // Delete a shipping fee
 router.delete("/:id", deleteShippingFee);
 
-router.delete("/:id/cities", addMultipleCities);
+// Add multiple cities to a shipping fee
+router.post("/:id/cities", addMultipleCities);
 
 module.exports = router;
