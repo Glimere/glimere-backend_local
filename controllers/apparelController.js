@@ -509,6 +509,123 @@ const searchApparels = async (req, res) => {
   }
 };
 
+const getFeaturedApparels = async (req, res) => {
+  try {
+    const featuredApparels = await Apparel.find({ is_featured: true })
+      .sort({ createdAt: -1 }) // Optional: Sort by most recently created
+      .populate({
+        path: "brand",
+        populate: [
+          {
+            path: "logo",
+            model: "Upload",
+          },
+        ],
+      })
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("apparel_images")
+      .populate({
+        path: "materials",
+        populate: [
+          {
+            path: "textures",
+            populate: [
+              {
+                path: "thumbnail",
+                model: "Upload",
+              },
+              {
+                path: "patternFile",
+                model: "Upload",
+              },
+            ],
+          },
+          {
+            path: "colorVariants",
+            model: "Color",
+          },
+        ],
+      })
+      .populate({
+        path: "models",
+        populate: [
+          {
+            path: "textures",
+            model: "Upload",
+          },
+          {
+            path: "file",
+            model: "Upload",
+          },
+          {
+            path: "animations",
+            model: "Upload",
+          },
+        ],
+      })
+      .populate({
+        path: "sizing_type",
+        model: "Size",
+        populate: [
+          {
+            path: "male",
+            model: "Size",
+          },
+          {
+            path: "female",
+            model: "Size",
+          },
+        ],
+      })
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      })
+      .populate("full_wear");
+
+    // If no featured apparels are found
+    if (!featuredApparels.length) {
+      return res.status(404).json({ message: "No featured apparels found" });
+    }
+
+    // Fetch and calculate reviews for each featured apparel
+    for (let apparel of featuredApparels) {
+      if (apparel.sizing_type) {
+        apparel.sizing_type.male = apparel.sizing_type.male.filter((maleSize) =>
+          apparel.sizes.includes(maleSize._id.toString())
+        );
+        apparel.sizing_type.female = apparel.sizing_type.female.filter(
+          (femaleSize) => apparel.sizes.includes(femaleSize._id.toString())
+        );
+      }
+
+      const reviews = await Review.find({ apparel: apparel._id }).populate({
+        path: "user",
+        model: "User",
+      });
+
+      const totalReviews = reviews.length;
+      const averageRating =
+        totalReviews > 0
+          ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+          : 0;
+
+      apparel.total_reviews = totalReviews;
+      apparel.average_rating = averageRating;
+      apparel.reviews = reviews;
+    }
+
+    res.status(200).json(featuredApparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
 module.exports = {
@@ -517,5 +634,6 @@ module.exports = {
   createApparel,
   deleteApparel,
   updateApparel,
-  searchApparels
+  searchApparels,
+  getFeaturedApparels
 };

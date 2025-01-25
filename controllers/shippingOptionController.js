@@ -49,7 +49,7 @@ const updateShippingOption = async (req, res) => {
       id,
       { name, description, couriers: couriers },
       { new: true }
-    ).populate('courier');
+    ).populate('couriers');
     if (!updatedOption) {
       return res.status(404).json({ error: 'Shipping option not found' });
     }
@@ -90,8 +90,8 @@ const addCourierToOption = async (req, res) => {
       return res.status(404).json({ error: 'Shipping option not found' });
     }
 
-    if (!option.courier.includes(courierId)) {
-      option.courier.push(courierId);
+    if (!option.couriers.includes(courierId)) {
+      option.couriers.push(courierId);
       await option.save();
     }
 
@@ -112,7 +112,7 @@ const updateCourierInOption = async (req, res) => {
       return res.status(404).json({ error: 'Courier not found' });
     }
 
-    const option = await ShippingOption.findById(id).populate('courier');
+    const option = await ShippingOption.findById(id).populate('couriers');
     if (!option) {
       return res.status(404).json({ error: 'Shipping option not found' });
     }
@@ -133,12 +133,12 @@ const deleteCourierFromOption = async (req, res) => {
       return res.status(404).json({ error: 'Shipping option not found' });
     }
 
-    const courierIndex = option.courier.indexOf(courierId);
+    const courierIndex = option.couriers.indexOf(courierId);
     if (courierIndex === -1) {
       return res.status(404).json({ error: 'Courier not found in this shipping option' });
     }
 
-    option.courier.splice(courierIndex, 1);
+    option.couriers.splice(courierIndex, 1);
     await option.save();
 
     res.status(200).json({ message: 'Courier removed from shipping option' });

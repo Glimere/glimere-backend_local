@@ -35,10 +35,10 @@ const shippingFeeRoutes = require("./routes/shippingFee");
 
 // Express app
 const app = express();
-const server = http.createServer(app); // Wrap Express with HTTP server
+const server = http.createServer(app); 
 const io = new Server(server, {
   cors: {
-    origin: [process.env.GLIMERE_SITE_URL, "http://localhost:3000"], // Allow frontend origins
+    origin: [process.env.GLIMERE_SITE_URL, "http://localhost:3000"], 
     methods: ["GET", "POST"],
   },
 });

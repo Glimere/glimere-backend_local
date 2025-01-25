@@ -6,7 +6,8 @@ const {
     getApparel,
     deleteApparel,
     updateApparel,
-    searchApparels
+    searchApparels,
+    getFeaturedApparels
 } = require('../controllers/apparelController')
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.get('/search', searchApparels);
 
 //GET all Apparels
 router.get('/', getApparels)
+router.get('/featured', getFeaturedApparels)
 
 //GET a single Apparel
 router.get('/:id', getApparel)

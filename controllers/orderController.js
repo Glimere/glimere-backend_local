@@ -13,6 +13,7 @@ const createOrder = async (req, res) => {
     total_price,
     total_items,
     shipping_option_id,
+    delivery_notes,
     courier_id,
   } = req.body;
 
@@ -69,6 +70,7 @@ const createOrder = async (req, res) => {
       shipping_address: address._id,
       total_price,
       total_items,
+      delivery_notes: delivery_notes || "",
       shipping_option: shipping_option_id,
       selected_courier: courier_id,
       order_status: 'pending',
@@ -164,6 +166,7 @@ const updateOrder = async (req, res) => {
     shipping_address,
     shipping_option_id,
     courier_id,
+    delivery_notes,
     total_price,
     total_items,
   } = req.body;

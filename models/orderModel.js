@@ -73,6 +73,9 @@ const orderSchema = new mongoose.Schema({
     enum: ["unpaid", "paid"],
     default: "unpaid",
   },
+  delivery_notes: {
+    type: String,
+  },
   created_at: {
     type: Date,
     default: Date.now,
