@@ -25,13 +25,14 @@ const colorRoutes = require("./routes/color");
 const waitlistRoutes = require("./routes/waitlist");
 const reviewRoutes = require("./routes/review");
 const cartRoutes = require("./routes/cart");
-const likeRoutes = require("./routes/like");
+const wishlistRoutes = require("./routes/wishlist");
 const shippingRoutes = require("./routes/shipping");
 const cardRoutes = require("./routes/card");
 const orderRoutes = require("./routes/order");
 const shippingOptionRoutes = require("./routes/shippingOption");
 const courierRoutes = require("./routes/courier");
 const shippingFeeRoutes = require("./routes/shippingFee");
+const notificationRoutes = require("./routes/notification");
 
 // Express app
 const app = express();
@@ -95,7 +96,7 @@ app.use("/api/color", colorRoutes);
 app.use("/api/waitlist", waitlistRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/cart", cartRoutes);
-app.use("/api/like", likeRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/shipping", shippingRoutes);
 app.use("/api/card", cardRoutes);
 app.use("/api/order", orderRoutes);
@@ -103,6 +104,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/shipping_option", shippingOptionRoutes);
 app.use("/api/courier", courierRoutes);
 app.use("/api/shipping_fee", shippingFeeRoutes);
+app.use("/api/notification", notificationRoutes);
 
 // WebSocket Logic
 io.on("connection", (socket) => {

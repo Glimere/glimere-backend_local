@@ -17,8 +17,19 @@ const NotificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["info", "warning", "error", "success"],
+      enum: ["info", "warning", "error", "success", "order", "promotion"],
       default: "info",
+    },
+    orderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Order", // Reference to Order model (if applicable)
+    },
+    images: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Upload", // Reference to Upload schema
+    }],
+    additionalData: {
+      type: Object, // Flexible field for extra metadata
     },
     isRead: {
       type: Boolean,

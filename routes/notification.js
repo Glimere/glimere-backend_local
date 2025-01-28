@@ -6,17 +6,19 @@ const {
   markAsRead,
   deleteNotification,
 } = require("../controllers/notificationController");
+const authMiddleware = require("../middlewares/authMiddleware");
+
 
 // Create a new notification
-router.post("/", createNotification);
+router.post("/", authMiddleware, createNotification);
 
 // Get notifications for a specific user
-router.get("/user/:userId", getUserNotifications);
+router.get("/", authMiddleware, getUserNotifications);
 
 // Mark a notification as read
-router.patch("/:id/read", markAsRead);
+router.patch("/:id/read", authMiddleware, markAsRead);
 
 // Delete a notification
-router.delete("/:id", deleteNotification);
+router.delete("/:id", authMiddleware, deleteNotification);
 
 module.exports = router;
