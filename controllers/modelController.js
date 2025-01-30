@@ -22,11 +22,7 @@ const createModel = async (req, res) => {
         // Save the model to the database
         await newModel.save();
 
-        res.status(201).json({
-            status: 'success',
-            message: '3D model created successfully',
-            data: newModel
-        });
+        res.status(201).json(newModel);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -40,10 +36,7 @@ const getModels = async (req, res) => {
             .populate('file')
             .populate('animations')
             .populate('textures');
-        res.status(200).json({
-            status: 'success',
-            data: models
-        });
+        res.status(200).json(models);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -60,10 +53,7 @@ const getModelById = async (req, res) => {
         if (!model) {
             return res.status(404).json({ message: 'Model not found' });
         }
-        res.status(200).json({
-            status: 'success',
-            data: model
-        });
+        res.status(200).json(model);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });

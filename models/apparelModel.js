@@ -133,6 +133,11 @@ const apparelSchema = new Schema(
         ref: "Apparel",
       },
     ],
+    apparel_class: {
+      type: String,
+      required: true,
+      enum: ["custom-made", "ready-made"], // Define the class as either 'custom-made' or 'ready-made'
+    },
   },
   { timestamps: true }
 );

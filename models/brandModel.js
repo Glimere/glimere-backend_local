@@ -35,6 +35,11 @@ const brandSchema = new Schema({
         ref: 'Upload',
         required: false
     },
+    coverImage: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Upload', 
+        required: false 
+    }, 
     website: {
         type: String,
         required: true
@@ -50,6 +55,10 @@ const brandSchema = new Schema({
     contactInfo: {
         type: contactInfoSchema,
         required: true
+    },
+    isOfficial: {
+        type: Boolean,
+        default: false
     },
     socialMediaLinks: {
         facebook: {

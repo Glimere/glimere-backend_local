@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
             folder = 'uploads/videos';
         } else if (file.mimetype.startsWith('audio/')) {
             folder = 'uploads/audio';
-        } else if (['model/gltf-binary', 'model/obj', 'model/fbx', 'model/gltf'].includes(file.mimetype)) {
+        } else if (['model/gltf-binary', 'model/obj', 'model/fbx', 'model/gltf+json'].includes(file.mimetype)) {
             folder = 'uploads/3d_models';
         } else if (file.mimetype.startsWith('application/')) {
             folder = 'uploads/documents';
@@ -36,7 +36,7 @@ const storage = multer.diskStorage({
 // Initialize multer with storage settings
 const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // Set a file size limit of 10MB (adjust as needed)
+    limits: { fileSize: 100 * 1024 * 1024 }, // Set a file size limit of 10MB (adjust as needed)
     fileFilter: (req, file, cb) => {
         // Check for supported file types
         const allowedTypes = ['image/', 'video/', 'audio/', 'model/gltf-binary', 'model/obj', 'model/fbx', 'model/gltf', 'application/'];

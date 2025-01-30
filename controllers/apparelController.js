@@ -8,6 +8,7 @@ const Size = require("../models/sizeModel");
 const Apparel = require("../models/apparelModel");
 const Review = require("../models/reviewModel");
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 // Get all apparels
 const getApparels = async (req, res) => {
@@ -248,6 +249,7 @@ const createApparel = async (req, res) => {
     views,
     is_featured,
     number_sold,
+    apparel_class,
   } = req.body;
 
   try {
@@ -275,6 +277,7 @@ const createApparel = async (req, res) => {
       number_sold,
       average_rating: 0,
       total_reviews: 0,
+      apparel_class,
     });
 
     // Update the categories to reference the new apparel item
@@ -446,10 +449,313 @@ const updateApparel = async (req, res) => {
   }
 };
 
+const searchApparels = async (req, res) => {
+  try {
+    const {
+      searchTerm = "",
+      apparelType,
+      brand,
+      mainCategory,
+      subCategory,
+      subSubCategory,
+      materials,
+      sizingType,
+      sizes,
+      ratingMin = 0,
+      ratingMax = 5,
+      isFeatured,
+      priceMin = 0,
+      priceMax = Number.MAX_VALUE,
+      apparelClass,
+    } = req.query;
+
+    // Initialize filters
+    const filters = {
+      average_rating: { $gte: parseFloat(ratingMin), $lte: parseFloat(ratingMax) },
+      apparel_price: { $gte: parseFloat(priceMin), $lte: parseFloat(priceMax) },
+    };
+
+    // Add filters dynamically
+    if (searchTerm) filters.apparel_name = { $regex: searchTerm, $options: "i" };
+    if (apparelType) filters.apparel_type = apparelType;
+    if (brand) filters.brand = brand;
+    if (apparelClass) filters.apparel_class = apparelClass;
+    if (mainCategory) filters.main_category = mainCategory;
+    if (subCategory) filters.sub_categories = subCategory;
+    if (subSubCategory) filters.sub_subcategories = subSubCategory;
+    if (materials) filters.materials = { $in: materials.split(",") }; // Match any material in the list
+    if (sizingType) filters["sizes.sizing_type"] = sizingType;
+    if (sizes) {
+      const sizeIds = sizes.split(",");
+      filters.$or = [
+        { "sizes.male": { $elemMatch: { _id: { $in: sizeIds } } } },
+        { "sizes.female": { $elemMatch: { _id: { $in: sizeIds } } } },
+      ];
+    }
+    if (isFeatured !== undefined) filters.is_featured = isFeatured === "true";
+
+    // Query the database with the filters
+    const apparels = await Apparel.find(filters)
+      .sort({ createdAt: -1 })
+      .populate("brand")
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("materials")
+      .populate("sizes");
+
+    if (!apparels.length) {
+      return res.status(404).json({ message: "No apparels found matching the criteria" });
+    }
+
+    res.status(200).json(apparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getFeaturedApparels = async (req, res) => {
+  try {
+    const featuredApparels = await Apparel.find({ is_featured: true })
+      .sort({ createdAt: -1 }) // Optional: Sort by most recently created
+      .populate({
+        path: "brand",
+        populate: [
+          {
+            path: "logo",
+            model: "Upload",
+          },
+        ],
+      })
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("apparel_images")
+      .populate({
+        path: "materials",
+        populate: [
+          {
+            path: "textures",
+            populate: [
+              {
+                path: "thumbnail",
+                model: "Upload",
+              },
+              {
+                path: "patternFile",
+                model: "Upload",
+              },
+            ],
+          },
+          {
+            path: "colorVariants",
+            model: "Color",
+          },
+        ],
+      })
+      .populate({
+        path: "models",
+        populate: [
+          {
+            path: "textures",
+            model: "Upload",
+          },
+          {
+            path: "file",
+            model: "Upload",
+          },
+          {
+            path: "animations",
+            model: "Upload",
+          },
+        ],
+      })
+      .populate({
+        path: "sizing_type",
+        model: "Size",
+        populate: [
+          {
+            path: "male",
+            model: "Size",
+          },
+          {
+            path: "female",
+            model: "Size",
+          },
+        ],
+      })
+      .populate("sizes")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "user",
+          model: "User",
+        },
+      })
+      .populate("full_wear");
+
+    // If no featured apparels are found
+    if (!featuredApparels.length) {
+      return res.status(404).json({ message: "No featured apparels found" });
+    }
+
+    // Fetch and calculate reviews for each featured apparel
+    for (let apparel of featuredApparels) {
+      if (apparel.sizing_type) {
+        apparel.sizing_type.male = apparel.sizing_type.male.filter((maleSize) =>
+          apparel.sizes.includes(maleSize._id.toString())
+        );
+        apparel.sizing_type.female = apparel.sizing_type.female.filter(
+          (femaleSize) => apparel.sizes.includes(femaleSize._id.toString())
+        );
+      }
+
+      const reviews = await Review.find({ apparel: apparel._id }).populate({
+        path: "user",
+        model: "User",
+      });
+
+      const totalReviews = reviews.length;
+      const averageRating =
+        totalReviews > 0
+          ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+          : 0;
+
+      apparel.total_reviews = totalReviews;
+      apparel.average_rating = averageRating;
+      apparel.reviews = reviews;
+    }
+
+    res.status(200).json(featuredApparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+const getNewApparels = async (req, res) => {
+  try {
+    const twoWeeksAgo = moment().subtract(14, "days").toDate();
+
+    const newApparels = await Apparel.find({ createdAt: { $gte: twoWeeksAgo } })
+      .sort({ createdAt: -1 })
+      .populate("brand")
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("apparel_images");
+
+    if (!newApparels.length) {
+      return res.status(404).json({ message: "No new apparels found" });
+    }
+
+    res.status(200).json(newApparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get trending apparels (highest views count)
+const getTrendingApparels = async (req, res) => {
+  try {
+    const trendingApparels = await Apparel.find({})
+      .sort({ views: -1 }) // Sort by views in descending order
+      .limit(10) // Optional: Limit to top 10
+      .populate("brand")
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("apparel_images");
+
+    if (!trendingApparels.length) {
+      return res.status(404).json({ message: "No trending apparels found" });
+    }
+
+    res.status(200).json(trendingApparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get top-selling apparels (highest number sold)
+const getTopSellingApparels = async (req, res) => {
+  try {
+    const topSellingApparels = await Apparel.find({})
+      .sort({ number_sold: -1 }) // Sort by number sold in descending order
+      .limit(10) // Optional: Limit to top 10
+      .populate("brand")
+      .populate("main_category")
+      .populate("sub_categories")
+      .populate("sub_subcategories")
+      .populate("apparel_images");
+
+    if (!topSellingApparels.length) {
+      return res.status(404).json({ message: "No top-selling apparels found" });
+    }
+
+    res.status(200).json(topSellingApparels);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateNumberSold = async (req, res) => {
+  const { id } = req.params; // Apparel ID
+  const { quantity } = req.body; // Quantity to add to number sold
+
+  try {
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({ message: "Invalid quantity provided" });
+    }
+
+    const apparel = await Apparel.findByIdAndUpdate(
+      id,
+      { $inc: { number_sold: quantity } }, // Increment number_sold
+      { new: true } // Return the updated document
+    );
+
+    if (!apparel) {
+      return res.status(404).json({ message: "Apparel not found" });
+    }
+
+    res.status(200).json({ message: "Number sold updated successfully", apparel });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update the views count for an apparel
+const updateViews = async (req, res) => {
+  const { id } = req.params; // Apparel ID
+
+  try {
+    const apparel = await Apparel.findByIdAndUpdate(
+      id,
+      { $inc: { views: 1 } }, // Increment views by 1
+      { new: true } // Return the updated document
+    );
+
+    if (!apparel) {
+      return res.status(404).json({ message: "Apparel not found" });
+    }
+
+    res.status(200).json({ message: "Views updated successfully", apparel });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getApparels,
   getApparel,
   createApparel,
   deleteApparel,
   updateApparel,
+  searchApparels,
+  getFeaturedApparels,
+  getNewApparels,
+  getTrendingApparels,
+  getTopSellingApparels,
+  updateNumberSold,
+  updateViews,
 };
