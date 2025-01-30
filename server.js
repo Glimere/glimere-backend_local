@@ -47,7 +47,7 @@ const io = new Server(server, {
 // Middleware
 app.use(express.json());
 
-const allowedOrigins = [process.env.GLIMERE_SITE_URL, "http://localhost:3000"];
+const allowedOrigins = [process.env.GLIMERE_SITE_URL, process.env.GLIMERE_SITE_URL_WWW, "http://localhost:3000"];
 
 const corsOptions = {
   optionsSuccessStatus: 200,
