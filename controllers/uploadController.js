@@ -11,7 +11,7 @@ const uploadFile = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const fileUrl = `${process.env.GLIMERE_BASE_URL}/${req.file.path.replace(/\\/g, '/')}`;
+        const fileUrl = `/${req.file.path.replace(/\\/g, '/')}`;
 
         const newUpload = new Upload({
             name: req.body.name || req.file.filename, // Use the uploaded file name or fallback
@@ -61,8 +61,8 @@ const updateUpload = async (req, res) => {
             return res.status(404).json({ message: 'Upload not found' });
         }
 
-        const oldFilePath = path.join(__dirname,"..", upload.url.replace(process.env.GLIMERE_BASE_URL, '').replace(/^\//, '')); // Adjust the path to root directory
-        const fileUrl = `${process.env.GLIMERE_BASE_URL}/${req.file.path.replace(/\\/g, '/')}`;
+        const oldFilePath = path.join(__dirname,"..", upload.url.replace(/^\//, '')); // Adjust the path to root directory
+        const fileUrl = `/${req.file.path.replace(/\\/g, '/')}`;
 
         if (req.file) {
             // Delete the old file from the uploads directory
@@ -101,7 +101,7 @@ const deleteUpload = async (req, res) => {
         }
 
         // Extract the relative path from the URL and get the file path
-        const relativePath = upload.url.replace(process.env.GLIMERE_BASE_URL, '').replace(/^\//, '');
+        const relativePath = upload.url.replace(/^\//, '');
         const filePath = path.join(__dirname,"..", relativePath); // Adjust the path to root directory
 
         console.log('Deleting file at path:', filePath); // Debug logging

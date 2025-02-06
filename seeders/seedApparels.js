@@ -12,11 +12,7 @@ const subCategoryIds = ["66fbad81324627adb1497fa2"];
 const subSubcategoryIds = ["66fbadc4324627adb1497fa4"];
 const materialIds = ["66fda5bc2ae8e868432a68b8"];
 const modelIds = [
-  "67804f56f16f5be16d99cfaa",
-  "678050d03944aa54f4ea090f",
-  "678051263944aa54f4ea0914",
-  "678051503944aa54f4ea0919",
-  "6780519e3944aa54f4ea091e",
+ "66fd3bebb7a707e98231ce15",
 ];
 const sizingTypeId = "66fb847b8ec98b35c818cf97";
 const sizeIds = [
@@ -26,6 +22,7 @@ const sizeIds = [
   "66fb847c8ec98b35c818d06b",
   "66fb847c8ec98b35c818d057",
 ];
+const apparelClasses = ["custom-made", "ready-made"]
 
 const mongoUri = process.env.MONGO_URL;
 
@@ -70,6 +67,7 @@ const seedApparels = async (numRecords) => {
       discount_end_date: faker.date.future(),
       is_discounted: faker.datatype.boolean(),
       apparel_type: faker.helpers.arrayElement(apparelTypes), // Random apparel type from the fixed list
+      apparel_class: faker.helpers.arrayElement(apparelClasses), // Random apparel type from the fixed list
       brand: brandId,
       main_category: mainCategoryId,
       sub_categories: subCategoryIds,
