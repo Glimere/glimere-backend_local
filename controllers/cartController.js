@@ -176,8 +176,63 @@ const removeItemsFromCart = async (req, res) => {
   }
 };
 
+const syncCart = async (req, res) => {
+  try {
+    const { cart: clientCart } = req.body;
+    let serverCart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
+
+    if (!serverCart) {
+      // If no existing cart, create a new one from client data
+      serverCart = new Cart({
+        user: req.user._id,
+        items: clientCart.items,
+        total_price: clientCart.total_price,
+        total_items: clientCart.total_items
+      });
+    } else {
+      // Reconcile client cart with server cart
+      const reconciledItems = [...serverCart.items];
+      
+      for (const clientItem of clientCart.items) {
+        const itemIndex = reconciledItems.findIndex(
+          (item) => item.apparel._id.toString() === clientItem.apparel._id.toString()
+        );
+
+        if (itemIndex > -1) {
+          // If item exists in both carts, take the higher quantity
+          reconciledItems[itemIndex].quantity = Math.max(
+            reconciledItems[itemIndex].quantity,
+            clientItem.quantity
+          );
+        } else {
+          // If item exists in client cart but not server cart, add it
+          reconciledItems.push(clientItem);
+        }
+      }
+
+      // Recalculate total items and price
+      const totalItems = reconciledItems.reduce((sum, item) => sum + item.quantity, 0);
+      const totalPrice = reconciledItems.reduce(
+        (sum, item) => sum + item.quantity * item.apparel.apparel_price,
+        0
+      );
+
+      serverCart.items = reconciledItems;
+      serverCart.total_items = totalItems;
+      serverCart.total_price = totalPrice;
+    }
+
+    await serverCart.save();
+    res.status(200).json(serverCart);
+  } catch (error) {
+    console.error('Cart synchronization failed:', error);
+    res.status(500).json({ error: 'Failed to synchronize cart' });
+  }
+};
+
 
 module.exports = {
+  syncCart,
   getCart,
   addItemToCart,
   removeItemFromCart,
