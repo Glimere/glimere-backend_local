@@ -1,5 +1,6 @@
 const Cart = require('../models/cartModel');
 const Apparel = require('../models/apparelModel');
+const mongoose = require('mongoose');
 
 // Get Cart
 const getCart = async (req, res) => {
@@ -69,6 +70,10 @@ const addItemToCart = async (req, res) => {
 const removeItemFromCart = async (req, res) => {
   const { apparelId } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid(apparelId)) {
+    return res.status(400).json({ error: 'Invalid apparel ID' });
+  }
+
   try {
     let cart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
 
@@ -80,22 +85,21 @@ const removeItemFromCart = async (req, res) => {
 
     if (itemIndex > -1) {
       const item = cart.items[itemIndex];
-      const itemPrice = item.apparel.apparel_price || 0;
-      cart.total_price -= item.quantity * itemPrice;
-      cart.total_items -= item.quantity;
+      const itemPrice = item.apparel?.apparel_price ?? 0; // Ensure apparel_price is valid
+
+      cart.total_price = Math.max(0, cart.total_price - item.quantity * itemPrice);
+      cart.total_items = Math.max(0, cart.total_items - item.quantity);
 
       cart.items.splice(itemIndex, 1);
 
-      cart.total_price = Math.max(0, cart.total_price);
-      cart.total_items = Math.max(0, cart.total_items);
-
       await cart.save();
-      res.status(200).json(cart);
-    } else {
-      res.status(404).json({ error: 'Item not found in cart' });
-    }
+      return res.status(200).json(cart);
+    } 
+
+    res.status(404).json({ error: 'Item not found in cart' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error removing item from cart:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
