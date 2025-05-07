@@ -1,3 +1,4 @@
+require("dotenv").config();
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
@@ -11,7 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:4000/api",
+        url: `${process.env.GLIMERE_BASE_URL}/api`,
         description: "Local development server",
       },
     ],
