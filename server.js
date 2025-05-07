@@ -7,6 +7,7 @@ const responseFormatter = require("./middlewares/formatter");
 const path = require("path"); // Import the path module
 const { Server } = require("socket.io"); // Import Socket.IO
 const http = require("http"); // Import HTTP for wrapping Express
+const { swaggerUi, swaggerSpec } = require("./swagger"); // Adjust path if needed
 
 // Import routes
 const apparelRoutes = require("./routes/apparel");
@@ -105,6 +106,8 @@ app.use("/api/shipping_option", shippingOptionRoutes);
 app.use("/api/courier", courierRoutes);
 app.use("/api/shipping_fee", shippingFeeRoutes);
 app.use("/api/notification", notificationRoutes);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // WebSocket Logic
 io.on("connection", (socket) => {
