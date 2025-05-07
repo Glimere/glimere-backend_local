@@ -20,7 +20,8 @@ const createSuperAdmin = async () => {
 
         const hashedPassword = await bcrypt.hash('Glimere.196500', 10); // Use a secure password
         const superAdmin = new Auth({
-            username: 'Admin',
+            first_name: 'Super',
+            last_name: 'Admin',
             email: 'josephakinwole@glimere.com',
             password: hashedPassword,
             phone_number: 7036857945,
