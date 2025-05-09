@@ -5,11 +5,23 @@ const User = require('../models/userModel');
 const mongoose = require("mongoose");
 
 // Generate JWT Token
-const generateToken = (id) => {
-    return jwt.sign({ userId: id }, process.env.SECRET_KEY, {
-        expiresIn: '24h',
-    });
+const generateToken = (user) => {
+    const { _id, first_name, last_name, email, phone_number, role, address } = user;
+    return jwt.sign(
+        {
+            _id,
+            first_name,
+            last_name,
+            email,
+            phone_number,
+            role,
+            address,
+        },
+        process.env.SECRET_KEY,
+        { expiresIn: '24h' }
+    );
 };
+
 
 // Register User
 const registerUser = async (req, res) => {
@@ -61,7 +73,7 @@ const registerUser = async (req, res) => {
             username: userAuth.username,
             email: userAuth.email,
             role: userAuth.role,
-            token: generateToken(userAuth._id),
+            token: generateToken(userAuth),
             message: 'Registration successful',
         });
     } catch (error) {
@@ -87,7 +99,7 @@ const loginUser = async (req, res, next) => {
         }
 
         // Generate token
-        const token = generateToken(user._id);
+        const token = generateToken(user);
 
         res.status(200).json({
             _id: user._id,
