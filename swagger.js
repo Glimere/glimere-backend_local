@@ -12,7 +12,7 @@ const options = {
     },
     servers: [
       {
-        url: `${process.env.GLIMERE_BASE_URL}/api`,
+        url: `${process.env.GLIMERE_BASE_URL || process.env.GLIMERE_BASE_URL_RENDER}/api`,
         description: "Local development server",
       },
     ],

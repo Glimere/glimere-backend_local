@@ -12,7 +12,7 @@ const { swaggerUi, swaggerSpec } = require("./swagger"); // Adjust path if neede
 // Import routes
 const apparelRoutes = require("./routes/apparel");
 const userRoutes = require("./routes/user"); // Add user routes
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth")
 const mainCategoryRoutes = require("./routes/mainCategory");
 const subCategoryRoutes = require("./routes/subCategory");
 const subSubCategoryRoutes = require("./routes/subSubCategory");
