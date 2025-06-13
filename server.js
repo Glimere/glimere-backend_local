@@ -34,6 +34,7 @@ const shippingOptionRoutes = require("./routes/shippingOption");
 const courierRoutes = require("./routes/courier");
 const shippingFeeRoutes = require("./routes/shippingFee");
 const notificationRoutes = require("./routes/notification");
+const creatorProfileRoutes = require("./routes/creatorProfile")
 
 // Express app
 const app = express();
@@ -106,6 +107,7 @@ app.use("/api/shipping_option", shippingOptionRoutes);
 app.use("/api/courier", courierRoutes);
 app.use("/api/shipping_fee", shippingFeeRoutes);
 app.use("/api/notification", notificationRoutes);
+app.use("/api/creatorProfile", creatorProfileRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

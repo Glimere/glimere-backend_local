@@ -1,5 +1,4 @@
 const User = require("../models/userModel");
-const Auth = require("../models/authModel");
 const mongoose = require("mongoose");
 
 
@@ -60,7 +59,7 @@ const deleteUser = async (req, res) => {
     }
 
     // Delete the corresponding auth details from the Auth collection
-    const auth = await Auth.findOneAndDelete({ _id: id });
+    const auth = await User.findOneAndDelete({ _id: id });
     if (!auth) {
       return res
         .status(404)

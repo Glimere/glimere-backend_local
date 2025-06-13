@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const Auth = require('./models/authModel');
+const User = require('./models/userModel');
 
 const createSuperAdmin = async () => {
 
@@ -19,7 +19,7 @@ const createSuperAdmin = async () => {
         });
 
         const hashedPassword = await bcrypt.hash('Glimere.196500', 10); // Use a secure password
-        const superAdmin = new Auth({
+        const superAdmin = new User({
             first_name: 'Super',
             last_name: 'Admin',
             email: 'josephakinwole@glimere.com',
