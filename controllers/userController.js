@@ -15,6 +15,7 @@ const getCurrentUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 // Get all users
 const getUsers = async (req, res) => {
   const users = await User.find({}).sort({ createdAt: -1 });
