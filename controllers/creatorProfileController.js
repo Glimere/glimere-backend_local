@@ -1,4 +1,4 @@
-const CreatorProfile = require('../models/creatorprofileModel');
+const CreatorProfile = require('../models/creatorProfileModel');
 
 // Create or update a creator profile
 exports.createOrUpdateCreatorProfile = async (req, res) => {
