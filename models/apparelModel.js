@@ -136,7 +136,7 @@ const apparelSchema = new Schema(
     apparel_class: {
       type: String,
       required: true,
-      enum: ["custom-made", "ready-made"], // Define the class as either 'custom-made' or 'ready-made'
+      enum: ["custom-made", "ready-made"],
     },
   },
   { timestamps: true }
