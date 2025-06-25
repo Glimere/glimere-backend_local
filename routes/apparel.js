@@ -26,7 +26,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/apparels/search:
+ * /apparels/search:
  *   get:
  *     summary: Search apparels
  *     tags: [Apparels]
@@ -44,7 +44,7 @@ router.get("/search", searchApparels);
 
 /**
  * @swagger
- * /api/apparels:
+ * /apparels:
  *   get:
  *     summary: Get all apparels
  *     tags: [Apparels]
@@ -56,7 +56,7 @@ router.get("/", getApparels);
 
 /**
  * @swagger
- * /api/apparels/featured:
+ * /apparels/featured:
  *   get:
  *     summary: Get featured apparels
  *     tags: [Apparels]
@@ -68,7 +68,7 @@ router.get("/featured", getFeaturedApparels);
 
 /**
  * @swagger
- * /api/apparels/new:
+ * /apparels/new:
  *   get:
  *     summary: Get new apparels
  *     tags: [Apparels]
@@ -80,7 +80,7 @@ router.get("/new", getNewApparels);
 
 /**
  * @swagger
- * /api/apparels/trending:
+ * /apparels/trending:
  *   get:
  *     summary: Get trending apparels
  *     tags: [Apparels]
@@ -92,7 +92,7 @@ router.get("/trending", getTrendingApparels);
 
 /**
  * @swagger
- * /api/apparels/top-selling:
+ * /apparels/top-selling:
  *   get:
  *     summary: Get top-selling apparels
  *     tags: [Apparels]
@@ -104,7 +104,7 @@ router.get("/top-selling", getTopSellingApparels);
 
 /**
  * @swagger
- * /api/apparels/{id}:
+ * /apparels/{id}:
  *   get:
  *     summary: Get an apparel by ID
  *     tags: [Apparels]
@@ -125,7 +125,7 @@ router.get("/:id", getApparel);
 
 /**
  * @swagger
- * /api/apparels:
+ * /apparels:
  *   post:
  *     summary: Create a new apparel
  *     tags: [Apparels]
@@ -143,7 +143,7 @@ router.post("/", createApparel);
 
 /**
  * @swagger
- * /api/apparels/{id}:
+ * /apparels/{id}:
  *   delete:
  *     summary: Delete an apparel
  *     tags: [Apparels]
@@ -164,7 +164,7 @@ router.delete("/:id", deleteApparel);
 
 /**
  * @swagger
- * /api/apparels/{id}:
+ * /apparels/{id}:
  *   patch:
  *     summary: Update an apparel
  *     tags: [Apparels]
@@ -189,7 +189,7 @@ router.patch("/:id", updateApparel);
 
 /**
  * @swagger
- * /api/apparels/{id}/sold:
+ * /apparels/{id}/sold:
  *   patch:
  *     summary: Update number sold for an apparel
  *     tags: [Apparels]
@@ -208,7 +208,7 @@ router.patch("/:id/sold", updateNumberSold);
 
 /**
  * @swagger
- * /api/apparels/{id}/views:
+ * /apparels/{id}/views:
  *   patch:
  *     summary: Update view count for an apparel
  *     tags: [Apparels]
