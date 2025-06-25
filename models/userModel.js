@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     style: {
-      type: [String], // e.g., ["Minimalist", "Streetwear"]
+      type: [String],
       default: [],
     },
     occasions: {
-      type: [String], // e.g., ["Wedding", "Casual", "Business"]
+      type: [String],
       default: [],
     },
     address: {

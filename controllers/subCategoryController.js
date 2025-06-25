@@ -35,14 +35,19 @@ const getSubCategory = async (req, res) => {
 
 // Create a new subcategory
 const createSubCategory = async (req, res) => {
-    const { name, main_category } = req.body;
+    const { name, main_category, slug, description } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(main_category)) {
         return res.status(400).json({ error: 'Invalid main category ID' });
     }
 
     try {
-        const subCategory = await SubCategory.create({ name, main_category });
+        const subCategory = await SubCategory.create({
+          name,
+          main_category,
+          slug,
+          description,
+        });
         res.status(200).json(subCategory);
     } catch (error) {
         res.status(400).json({ error: error.message });

@@ -1,16 +1,38 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-
-const mainCategorySchema = new Schema({
+const mainCategorySchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      maxlength: 100,
     },
-    apparels: [{
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: 300,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    apparels: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Apparel'
-    }]
-}, { timestamps: true });
+        ref: "Apparel",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('MainCategory', mainCategorySchema);
+module.exports = mongoose.model("MainCategory", mainCategorySchema);
