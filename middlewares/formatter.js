@@ -1,9 +1,21 @@
 const responseFormatter = (req, res, next) => {
-  // Store the original res.json method
   const originalJson = res.json;
 
-  // Wrap res.json to format responses
   res.json = function (data, customMessage) {
+    // Check if data is already formatted (has status, message, and data)
+    const isFormatted =
+      data &&
+      typeof data === "object" &&
+      "status" in data &&
+      "message" in data &&
+      "data" in data;
+
+    if (isFormatted) {
+      // If already formatted, return it as-is
+      return originalJson.call(res, data);
+    }
+
+    // If not fully formatted, create a new formatted response
     const statusCode = res.statusCode || 200;
     const isSuccess = statusCode < 400;
 

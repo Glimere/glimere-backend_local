@@ -4,19 +4,14 @@ const mongoose = require("mongoose");
 
 const getCart = async (req, res) => {
   try {
-    let cart = await Cart.findOne({ user: req.user._id })
-      .populate({
-        path: "items.apparel",
-        populate: {
-          path: "apparel_images",
-        },
-      })
-      .populate("items.selected_sizes")
-      .populate("items.selected_materials")
-      .populate("items.selected_colors");
+    let cart = await Cart.findOne({ user: req.user._id }).populate([
+      { path: "items.apparel", populate: { path: "apparel_images" } },
+      { path: "items.selected_sizes" },
+      { path: "items.selected_materials" },
+      { path: "items.selected_colors" },
+    ]);
 
     if (!cart) {
-      // Create a new empty cart if none exists
       cart = new Cart({
         user: req.user._id,
         items: [],
@@ -27,15 +22,9 @@ const getCart = async (req, res) => {
       await cart.save();
     }
 
-    res.status(200).json(cart);
+    res.status(200).json(cart, "Cart retrieved successfully");
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        status: "error",
-        message: "There was an error",
-        data: { error: error.message },
-      });
+    res.status(500).json({ error: error.message }, "Failed to retrieve cart");
   }
 };
 
@@ -50,17 +39,13 @@ const addItemToCart = async (req, res) => {
   } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(apparelId)) {
-    return res
-      .status(400)
-      .json({ status: "error", message: "Invalid apparel ID", data: {} });
+    return res.status(400).json({}, "Invalid apparel ID");
   }
 
   try {
     const apparel = await Apparel.findById(apparelId);
     if (!apparel) {
-      return res
-        .status(404)
-        .json({ status: "error", message: "Apparel not found", data: {} });
+      return res.status(404).json({}, "Apparel not found");
     }
 
     let cart = await Cart.findOne({ user: req.user._id });
@@ -75,17 +60,13 @@ const addItemToCart = async (req, res) => {
     }
 
     if (version !== undefined && cart.version !== version) {
-      await cart
-        .populate({
-          path: "items.apparel",
-          populate: { path: "apparel_images" },
-        })
-        .populate("items.selected_sizes")
-        .populate("items.selected_materials")
-        .populate("items.selected_colors");
-      return res
-        .status(409)
-        .json({ status: "error", message: "Version conflict", data: { cart } });
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
+      return res.status(409).json({ cart }, "Version conflict");
     }
 
     const itemIndex = cart.items.findIndex((item) =>
@@ -114,24 +95,18 @@ const addItemToCart = async (req, res) => {
     cart.version += 1;
 
     await cart.save();
-    await cart
-      .populate({
-        path: "items.apparel",
-        populate: { path: "apparel_images" },
-      })
-      .populate("items.selected_sizes")
-      .populate("items.selected_materials")
-      .populate("items.selected_colors");
+    await cart.populate([
+      { path: "items.apparel", populate: { path: "apparel_images" } },
+      { path: "items.selected_sizes" },
+      { path: "items.selected_materials" },
+      { path: "items.selected_colors" },
+    ]);
 
-    res.status(200).json(cart);
+    res.status(200).json(cart, "Item added to cart successfully");
   } catch (error) {
     res
       .status(500)
-      .json({
-        status: "error",
-        message: "There was an error",
-        data: { error: error.message },
-      });
+      .json({ error: error.message }, "Failed to add item to cart");
   }
 };
 
@@ -159,21 +134,13 @@ const syncCart = async (req, res) => {
       });
     } else {
       if (clientCart.version < serverCart.version) {
-        await serverCart
-          .populate({
-            path: "items.apparel",
-            populate: { path: "apparel_images" },
-          })
-          .populate("items.selected_sizes")
-          .populate("items.selected_materials")
-          .populate("items.selected_colors");
-        return res
-          .status(409)
-          .json({
-            status: "error",
-            message: "Version conflict",
-            data: { cart: serverCart },
-          });
+        await serverCart.populate([
+          { path: "items.apparel", populate: { path: "apparel_images" } },
+          { path: "items.selected_sizes" },
+          { path: "items.selected_materials" },
+          { path: "items.selected_colors" },
+        ]);
+        return res.status(409).json({ cart: serverCart }, "Version conflict");
       }
 
       const reconciledItems = [...serverCart.items];
@@ -227,24 +194,18 @@ const syncCart = async (req, res) => {
     }
 
     await serverCart.save();
-    await serverCart
-      .populate({
-        path: "items.apparel",
-        populate: { path: "apparel_images" },
-      })
-      .populate("items.selected_sizes")
-      .populate("items.selected_materials")
-      .populate("items.selected_colors");
+    await serverCart.populate([
+      { path: "items.apparel", populate: { path: "apparel_images" } },
+      { path: "items.selected_sizes" },
+      { path: "items.selected_materials" },
+      { path: "items.selected_colors" },
+    ]);
 
-    res.status(200).json(serverCart);
+    res.status(200).json(serverCart, "Cart synchronized successfully");
   } catch (error) {
     res
       .status(500)
-      .json({
-        status: "error",
-        message: "Failed to synchronize cart",
-        data: { error: error.message },
-      });
+      .json({ error: error.message }, "Failed to synchronize cart");
   }
 };
 
@@ -253,7 +214,7 @@ const removeItemFromCart = async (req, res) => {
   const { version } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(apparelId)) {
-    return res.status(400).json({ error: "Invalid apparel ID" });
+    return res.status(400).json({}, "Invalid apparel ID");
   }
 
   try {
@@ -261,11 +222,17 @@ const removeItemFromCart = async (req, res) => {
       "items.apparel"
     );
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+      return res.status(404).json({}, "Cart not found");
     }
 
     if (version !== undefined && cart.version !== version) {
-      return res.status(409).json({ error: "Version conflict", cart });
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
+      return res.status(409).json({ cart }, "Version conflict");
     }
 
     const itemIndex = cart.items.findIndex((item) =>
@@ -285,21 +252,21 @@ const removeItemFromCart = async (req, res) => {
       cart.version += 1;
 
       await cart.save();
-      await cart
-        .populate({
-          path: "items.apparel",
-          populate: { path: "apparel_images" },
-        })
-        .populate("items.selected_sizes")
-        .populate("items.selected_materials")
-        .populate("items.selected_colors");
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
 
-      return res.status(200).json(cart);
+      return res.status(200).json(cart, "Item removed from cart successfully");
     }
 
-    res.status(404).json({ error: "Item not found in cart" });
+    res.status(404).json({}, "Item not found in cart");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: error.message }, "Failed to remove item from cart");
   }
 };
 
@@ -307,7 +274,7 @@ const updateItemQuantity = async (req, res) => {
   const { apparelId, quantity, version } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(apparelId)) {
-    return res.status(400).json({ error: "Invalid apparel ID" });
+    return res.status(400).json({}, "Invalid apparel ID");
   }
 
   try {
@@ -315,11 +282,17 @@ const updateItemQuantity = async (req, res) => {
       "items.apparel"
     );
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+      return res.status(404).json({}, "Cart not found");
     }
 
     if (version !== undefined && cart.version !== version) {
-      return res.status(409).json({ error: "Version conflict", cart });
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
+      return res.status(409).json({ cart }, "Version conflict");
     }
 
     const itemIndex = cart.items.findIndex((item) =>
@@ -341,21 +314,21 @@ const updateItemQuantity = async (req, res) => {
       cart.version += 1;
 
       await cart.save();
-      await cart
-        .populate({
-          path: "items.apparel",
-          populate: { path: "apparel_images" },
-        })
-        .populate("items.selected_sizes")
-        .populate("items.selected_materials")
-        .populate("items.selected_colors");
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
 
-      res.status(200).json(cart);
+      res.status(200).json(cart, "Item quantity updated successfully");
     } else {
-      res.status(404).json({ error: "Item not found in cart" });
+      res.status(404).json({}, "Item not found in cart");
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: error.message }, "Failed to update item quantity");
   }
 };
 
@@ -363,9 +336,7 @@ const removeItemsFromCart = async (req, res) => {
   const { apparelIds, version } = req.body;
 
   if (!Array.isArray(apparelIds) || apparelIds.length === 0) {
-    return res
-      .status(400)
-      .json({ error: "apparelIds must be a non-empty array." });
+    return res.status(400).json({}, "apparelIds must be a non-empty array");
   }
 
   try {
@@ -373,11 +344,17 @@ const removeItemsFromCart = async (req, res) => {
       "items.apparel"
     );
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+      return res.status(404).json({}, "Cart not found");
     }
 
     if (version !== undefined && cart.version !== version) {
-      return res.status(409).json({ error: "Version conflict", cart });
+      await cart.populate([
+        { path: "items.apparel", populate: { path: "apparel_images" } },
+        { path: "items.selected_sizes" },
+        { path: "items.selected_materials" },
+        { path: "items.selected_colors" },
+      ]);
+      return res.status(409).json({ cart }, "Version conflict");
     }
 
     const apparelIdsString = apparelIds.map((id) => id.toString());
@@ -403,27 +380,26 @@ const removeItemsFromCart = async (req, res) => {
     cart.version += 1;
 
     await cart.save();
-    await cart
-      .populate({
-        path: "items.apparel",
-        populate: { path: "apparel_images" },
-      })
-      .populate("items.selected_sizes")
-      .populate("items.selected_materials")
-      .populate("items.selected_colors");
+    await cart.populate([
+      { path: "items.apparel", populate: { path: "apparel_images" } },
+      { path: "items.selected_sizes" },
+      { path: "items.selected_materials" },
+      { path: "items.selected_colors" },
+    ]);
 
-    res.status(200).json(cart);
+    res.status(200).json(cart, "Items removed from cart successfully");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({ error: error.message }, "Failed to remove items from cart");
   }
 };
 
-
 module.exports = {
-  syncCart,
   getCart,
   addItemToCart,
+  syncCart,
   removeItemFromCart,
-  removeItemsFromCart,
   updateItemQuantity,
+  removeItemsFromCart,
 };
