@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ user: req.user._id })
+    let cart = await Cart.findOne({ user: req.user._id })
       .populate({
         path: "items.apparel",
         populate: {
@@ -16,12 +16,26 @@ const getCart = async (req, res) => {
       .populate("items.selected_colors");
 
     if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+      // Create a new empty cart if none exists
+      cart = new Cart({
+        user: req.user._id,
+        items: [],
+        total_price: 0,
+        total_items: 0,
+        version: 0,
+      });
+      await cart.save();
     }
 
-    res.status(200).json(cart);
+    res.status(200).json({ status: "success", data: cart });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({
+        status: "error",
+        message: "There was an error",
+        data: { error: error.message },
+      });
   }
 };
 
@@ -36,22 +50,42 @@ const addItemToCart = async (req, res) => {
   } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(apparelId)) {
-    return res.status(400).json({ error: "Invalid apparel ID" });
+    return res
+      .status(400)
+      .json({ status: "error", message: "Invalid apparel ID", data: {} });
   }
 
   try {
     const apparel = await Apparel.findById(apparelId);
     if (!apparel) {
-      return res.status(404).json({ error: "Apparel not found" });
+      return res
+        .status(404)
+        .json({ status: "error", message: "Apparel not found", data: {} });
     }
 
     let cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
-      cart = new Cart({ user: req.user._id, items: [], version: 0 });
+      cart = new Cart({
+        user: req.user._id,
+        items: [],
+        total_price: 0,
+        total_items: 0,
+        version: 0,
+      });
     }
 
     if (version !== undefined && cart.version !== version) {
-      return res.status(409).json({ error: "Version conflict", cart });
+      await cart
+        .populate({
+          path: "items.apparel",
+          populate: { path: "apparel_images" },
+        })
+        .populate("items.selected_sizes")
+        .populate("items.selected_materials")
+        .populate("items.selected_colors");
+      return res
+        .status(409)
+        .json({ status: "error", message: "Version conflict", data: { cart } });
     }
 
     const itemIndex = cart.items.findIndex((item) =>
@@ -65,9 +99,9 @@ const addItemToCart = async (req, res) => {
       cart.items.push({
         apparel: apparelId,
         quantity,
-        selected_sizes,
-        selected_materials,
-        selected_colors,
+        selected_sizes: selected_sizes || [],
+        selected_materials: selected_materials || [],
+        selected_colors: selected_colors || [],
         lastModified: new Date(),
       });
     }
@@ -89,9 +123,128 @@ const addItemToCart = async (req, res) => {
       .populate("items.selected_materials")
       .populate("items.selected_colors");
 
-    res.status(200).json(cart);
+    res.status(200).json({ status: "success", data: cart });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res
+      .status(500)
+      .json({
+        status: "error",
+        message: "There was an error",
+        data: { error: error.message },
+      });
+  }
+};
+
+const syncCart = async (req, res) => {
+  try {
+    const { cart: clientCart } = req.body;
+    let serverCart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.apparel"
+    );
+
+    if (!serverCart) {
+      serverCart = new Cart({
+        user: req.user._id,
+        items: clientCart.items.map((item) => ({
+          apparel: item.apparel._id,
+          quantity: item.quantity,
+          selected_sizes: item.selected_sizes || [],
+          selected_materials: item.selected_materials || [],
+          selected_colors: item.selected_colors || [],
+          lastModified: new Date(item.lastModified || Date.now()),
+        })),
+        total_price: clientCart.total_price,
+        total_items: clientCart.total_items,
+        version: clientCart.version || 0,
+      });
+    } else {
+      if (clientCart.version < serverCart.version) {
+        await serverCart
+          .populate({
+            path: "items.apparel",
+            populate: { path: "apparel_images" },
+          })
+          .populate("items.selected_sizes")
+          .populate("items.selected_materials")
+          .populate("items.selected_colors");
+        return res
+          .status(409)
+          .json({
+            status: "error",
+            message: "Version conflict",
+            data: { cart: serverCart },
+          });
+      }
+
+      const reconciledItems = [...serverCart.items];
+
+      for (const clientItem of clientCart.items) {
+        const itemIndex = reconciledItems.findIndex(
+          (item) =>
+            item.apparel._id.toString() === clientItem.apparel._id.toString()
+        );
+
+        const clientModified = new Date(
+          clientItem.lastModified || clientCart.updatedAt
+        );
+        if (itemIndex > -1) {
+          const serverItem = reconciledItems[itemIndex];
+          const serverModified = new Date(
+            serverItem.lastModified || serverCart.updatedAt
+          );
+          if (clientModified > serverModified) {
+            reconciledItems[itemIndex] = {
+              apparel: clientItem.apparel._id,
+              quantity: clientItem.quantity,
+              selected_sizes: clientItem.selected_sizes || [],
+              selected_materials: clientItem.selected_materials || [],
+              selected_colors: clientItem.selected_colors || [],
+              lastModified: clientModified,
+            };
+          }
+        } else {
+          reconciledItems.push({
+            apparel: clientItem.apparel._id,
+            quantity: clientItem.quantity,
+            selected_sizes: clientItem.selected_sizes || [],
+            selected_materials: clientItem.selected_materials || [],
+            selected_colors: clientItem.selected_colors || [],
+            lastModified: clientModified,
+          });
+        }
+      }
+
+      serverCart.items = reconciledItems;
+      serverCart.total_items = reconciledItems.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+      );
+      serverCart.total_price = reconciledItems.reduce(
+        (sum, item) => sum + item.quantity * (item.apparel.apparel_price || 0),
+        0
+      );
+      serverCart.version = clientCart.version + 1;
+    }
+
+    await serverCart.save();
+    await serverCart
+      .populate({
+        path: "items.apparel",
+        populate: { path: "apparel_images" },
+      })
+      .populate("items.selected_sizes")
+      .populate("items.selected_materials")
+      .populate("items.selected_colors");
+
+    res.status(200).json({ status: "success", data: serverCart });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        status: "error",
+        message: "Failed to synchronize cart",
+        data: { error: error.message },
+      });
   }
 };
 
@@ -265,88 +418,6 @@ const removeItemsFromCart = async (req, res) => {
   }
 };
 
-const syncCart = async (req, res) => {
-  try {
-    const { cart: clientCart } = req.body;
-    let serverCart = await Cart.findOne({ user: req.user._id }).populate(
-      "items.apparel"
-    );
-
-    if (!serverCart) {
-      serverCart = new Cart({
-        user: req.user._id,
-        items: clientCart.items.map((item) => ({
-          ...item,
-          lastModified: new Date(item.lastModified || Date.now()),
-        })),
-        total_price: clientCart.total_price,
-        total_items: clientCart.total_items,
-        version: clientCart.version || 0,
-      });
-    } else {
-      if (clientCart.version < serverCart.version) {
-        return res
-          .status(409)
-          .json({ error: "Version conflict", cart: serverCart });
-      }
-
-      const reconciledItems = [...serverCart.items];
-
-      for (const clientItem of clientCart.items) {
-        const itemIndex = reconciledItems.findIndex(
-          (item) =>
-            item.apparel._id.toString() === clientItem.apparel._id.toString()
-        );
-
-        const clientModified = new Date(
-          clientItem.lastModified || clientCart.updatedAt
-        );
-        if (itemIndex > -1) {
-          const serverItem = reconciledItems[itemIndex];
-          const serverModified = new Date(
-            serverItem.lastModified || serverCart.leg
-          );
-          if (clientModified > serverModified) {
-            reconciledItems[itemIndex] = {
-              ...clientItem,
-              lastModified: clientModified,
-            };
-          }
-        } else {
-          reconciledItems.push({
-            ...clientItem,
-            lastModified: clientModified,
-          });
-        }
-      }
-
-      serverCart.items = reconciledItems;
-      serverCart.total_items = reconciledItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-      );
-      serverCart.total_price = reconciledItems.reduce(
-        (sum, item) => sum + item.quantity * (item.apparel.apparel_price || 0),
-        0
-      );
-      serverCart.version = clientCart.version + 1;
-    }
-
-    await serverCart.save();
-    await serverCart
-      .populate({
-        path: "items.apparel",
-        populate: { path: "apparel_images" },
-      })
-      .populate("items.selected_sizes")
-      .populate("items.selected_materials")
-      .populate("items.selected_colors");
-
-    res.status(200).json(serverCart);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to synchronize cart" });
-  }
-};
 
 module.exports = {
   syncCart,
