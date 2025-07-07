@@ -1,23 +1,22 @@
-const Cart = require('../models/cartModel');
-const Apparel = require('../models/apparelModel');
-const mongoose = require('mongoose');
+const Cart = require("../models/cartModel");
+const Apparel = require("../models/apparelModel");
+const mongoose = require("mongoose");
 
-// Get Cart
 const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id })
       .populate({
-        path: 'items.apparel',
+        path: "items.apparel",
         populate: {
-          path: 'apparel_images' // Populate apparel_images within apparel
-        }
+          path: "apparel_images",
+        },
       })
-      .populate('items.selected_sizes')
-      .populate('items.selected_materials')
-      .populate('items.selected_colors');
+      .populate("items.selected_sizes")
+      .populate("items.selected_materials")
+      .populate("items.selected_colors");
 
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      return res.status(404).json({ error: "Cart not found" });
     }
 
     res.status(200).json(cart);
@@ -26,41 +25,70 @@ const getCart = async (req, res) => {
   }
 };
 
-
-// Add Item to Cart
 const addItemToCart = async (req, res) => {
-  const { apparelId, quantity, selected_sizes, selected_materials, selected_colors } = req.body;
+  const {
+    apparelId,
+    quantity,
+    version,
+    selected_sizes,
+    selected_materials,
+    selected_colors,
+  } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(apparelId)) {
+    return res.status(400).json({ error: "Invalid apparel ID" });
+  }
 
   try {
     const apparel = await Apparel.findById(apparelId);
     if (!apparel) {
-      return res.status(404).json({ error: 'Apparel not found' });
+      return res.status(404).json({ error: "Apparel not found" });
     }
 
     let cart = await Cart.findOne({ user: req.user._id });
-
     if (!cart) {
-      cart = new Cart({ user: req.user._id, items: [] });
+      cart = new Cart({ user: req.user._id, items: [], version: 0 });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.apparel.equals(apparelId));
+    if (version !== undefined && cart.version !== version) {
+      return res.status(409).json({ error: "Version conflict", cart });
+    }
+
+    const itemIndex = cart.items.findIndex((item) =>
+      item.apparel.equals(apparelId)
+    );
 
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
+      cart.items[itemIndex].lastModified = new Date();
     } else {
       cart.items.push({
         apparel: apparelId,
         quantity,
         selected_sizes,
         selected_materials,
-        selected_colors
+        selected_colors,
+        lastModified: new Date(),
       });
     }
 
-    cart.total_price += apparel.apparel_price * quantity;
-    cart.total_items += quantity;
+    cart.total_price = cart.items.reduce(
+      (sum, item) => sum + item.quantity * (item.apparel?.apparel_price || 0),
+      0
+    );
+    cart.total_items = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    cart.version += 1;
 
     await cart.save();
+    await cart
+      .populate({
+        path: "items.apparel",
+        populate: { path: "apparel_images" },
+      })
+      .populate("items.selected_sizes")
+      .populate("items.selected_materials")
+      .populate("items.selected_colors");
+
     res.status(200).json(cart);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -69,52 +97,81 @@ const addItemToCart = async (req, res) => {
 
 const removeItemFromCart = async (req, res) => {
   const { apparelId } = req.params;
+  const { version } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(apparelId)) {
-    return res.status(400).json({ error: 'Invalid apparel ID' });
+    return res.status(400).json({ error: "Invalid apparel ID" });
   }
 
   try {
-    let cart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
-
+    let cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.apparel"
+    );
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      return res.status(404).json({ error: "Cart not found" });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.apparel._id.equals(apparelId));
+    if (version !== undefined && cart.version !== version) {
+      return res.status(409).json({ error: "Version conflict", cart });
+    }
+
+    const itemIndex = cart.items.findIndex((item) =>
+      item.apparel._id.equals(apparelId)
+    );
 
     if (itemIndex > -1) {
       const item = cart.items[itemIndex];
-      const itemPrice = item.apparel?.apparel_price ?? 0; // Ensure apparel_price is valid
+      const itemPrice = item.apparel?.apparel_price ?? 0;
 
-      cart.total_price = Math.max(0, cart.total_price - item.quantity * itemPrice);
+      cart.total_price = Math.max(
+        0,
+        cart.total_price - item.quantity * itemPrice
+      );
       cart.total_items = Math.max(0, cart.total_items - item.quantity);
-
       cart.items.splice(itemIndex, 1);
+      cart.version += 1;
 
       await cart.save();
-      return res.status(200).json(cart);
-    } 
+      await cart
+        .populate({
+          path: "items.apparel",
+          populate: { path: "apparel_images" },
+        })
+        .populate("items.selected_sizes")
+        .populate("items.selected_materials")
+        .populate("items.selected_colors");
 
-    res.status(404).json({ error: 'Item not found in cart' });
+      return res.status(200).json(cart);
+    }
+
+    res.status(404).json({ error: "Item not found in cart" });
   } catch (error) {
-    console.error('Error removing item from cart:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Update Item Quantity
 const updateItemQuantity = async (req, res) => {
-  const { apparelId, quantity } = req.body;
+  const { apparelId, quantity, version } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(apparelId)) {
+    return res.status(400).json({ error: "Invalid apparel ID" });
+  }
 
   try {
-    let cart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
-
+    let cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.apparel"
+    );
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      return res.status(404).json({ error: "Cart not found" });
     }
 
-    const itemIndex = cart.items.findIndex(item => item.apparel._id.equals(apparelId));
+    if (version !== undefined && cart.version !== version) {
+      return res.status(409).json({ error: "Version conflict", cart });
+    }
+
+    const itemIndex = cart.items.findIndex((item) =>
+      item.apparel._id.equals(apparelId)
+    );
 
     if (itemIndex > -1) {
       const item = cart.items[itemIndex];
@@ -122,17 +179,27 @@ const updateItemQuantity = async (req, res) => {
       const itemPrice = item.apparel.apparel_price || 0;
 
       item.quantity = quantity;
+      item.lastModified = new Date();
 
       cart.total_price += difference * itemPrice;
       cart.total_items += difference;
-
       cart.total_price = Math.max(0, cart.total_price);
       cart.total_items = Math.max(0, cart.total_items);
+      cart.version += 1;
 
       await cart.save();
+      await cart
+        .populate({
+          path: "items.apparel",
+          populate: { path: "apparel_images" },
+        })
+        .populate("items.selected_sizes")
+        .populate("items.selected_materials")
+        .populate("items.selected_colors");
+
       res.status(200).json(cart);
     } else {
-      res.status(404).json({ error: 'Item not found in cart' });
+      res.status(404).json({ error: "Item not found in cart" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -140,39 +207,57 @@ const updateItemQuantity = async (req, res) => {
 };
 
 const removeItemsFromCart = async (req, res) => {
-  const { apparelIds } = req.body;
+  const { apparelIds, version } = req.body;
+
+  if (!Array.isArray(apparelIds) || apparelIds.length === 0) {
+    return res
+      .status(400)
+      .json({ error: "apparelIds must be a non-empty array." });
+  }
 
   try {
-    // Validate apparelIds
-    if (!Array.isArray(apparelIds) || apparelIds.length === 0) {
-      return res.status(400).json({ error: 'apparelIds must be a non-empty array.' });
-    }
-
-    let cart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
-
+    let cart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.apparel"
+    );
     if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
+      return res.status(404).json({ error: "Cart not found" });
     }
 
-    // Ensure all IDs are strings for comparison
-    const apparelIdsString = apparelIds.map(id => id.toString());
+    if (version !== undefined && cart.version !== version) {
+      return res.status(409).json({ error: "Version conflict", cart });
+    }
 
-    // Filter out items to be removed and calculate reductions
-    const updatedItems = cart.items.filter(item => !apparelIdsString.includes(item.apparel._id.toString()));
-    const removedItems = cart.items.filter(item => apparelIdsString.includes(item.apparel._id.toString()));
+    const apparelIdsString = apparelIds.map((id) => id.toString());
+    const updatedItems = cart.items.filter(
+      (item) => !apparelIdsString.includes(item.apparel._id.toString())
+    );
+    const removedItems = cart.items.filter((item) =>
+      apparelIdsString.includes(item.apparel._id.toString())
+    );
 
     const totalPriceReduction = removedItems.reduce(
-      (acc, item) => acc + (item.quantity * (item.apparel.apparel_price || 0)),
+      (acc, item) => acc + item.quantity * (item.apparel.apparel_price || 0),
       0
     );
-    const totalItemsReduction = removedItems.reduce((acc, item) => acc + item.quantity, 0);
+    const totalItemsReduction = removedItems.reduce(
+      (acc, item) => acc + item.quantity,
+      0
+    );
 
-    // Update cart
     cart.items = updatedItems;
     cart.total_price = Math.max(0, cart.total_price - totalPriceReduction);
     cart.total_items = Math.max(0, cart.total_items - totalItemsReduction);
+    cart.version += 1;
 
     await cart.save();
+    await cart
+      .populate({
+        path: "items.apparel",
+        populate: { path: "apparel_images" },
+      })
+      .populate("items.selected_sizes")
+      .populate("items.selected_materials")
+      .populate("items.selected_colors");
 
     res.status(200).json(cart);
   } catch (error) {
@@ -183,57 +268,85 @@ const removeItemsFromCart = async (req, res) => {
 const syncCart = async (req, res) => {
   try {
     const { cart: clientCart } = req.body;
-    let serverCart = await Cart.findOne({ user: req.user._id }).populate('items.apparel');
+    let serverCart = await Cart.findOne({ user: req.user._id }).populate(
+      "items.apparel"
+    );
 
     if (!serverCart) {
-      // If no existing cart, create a new one from client data
       serverCart = new Cart({
         user: req.user._id,
-        items: clientCart.items,
+        items: clientCart.items.map((item) => ({
+          ...item,
+          lastModified: new Date(item.lastModified || Date.now()),
+        })),
         total_price: clientCart.total_price,
-        total_items: clientCart.total_items
+        total_items: clientCart.total_items,
+        version: clientCart.version || 0,
       });
     } else {
-      // Reconcile client cart with server cart
+      if (clientCart.version < serverCart.version) {
+        return res
+          .status(409)
+          .json({ error: "Version conflict", cart: serverCart });
+      }
+
       const reconciledItems = [...serverCart.items];
-      
+
       for (const clientItem of clientCart.items) {
         const itemIndex = reconciledItems.findIndex(
-          (item) => item.apparel._id.toString() === clientItem.apparel._id.toString()
+          (item) =>
+            item.apparel._id.toString() === clientItem.apparel._id.toString()
         );
 
+        const clientModified = new Date(
+          clientItem.lastModified || clientCart.updatedAt
+        );
         if (itemIndex > -1) {
-          // If item exists in both carts, take the higher quantity
-          reconciledItems[itemIndex].quantity = Math.max(
-            reconciledItems[itemIndex].quantity,
-            clientItem.quantity
+          const serverItem = reconciledItems[itemIndex];
+          const serverModified = new Date(
+            serverItem.lastModified || serverCart.leg
           );
+          if (clientModified > serverModified) {
+            reconciledItems[itemIndex] = {
+              ...clientItem,
+              lastModified: clientModified,
+            };
+          }
         } else {
-          // If item exists in client cart but not server cart, add it
-          reconciledItems.push(clientItem);
+          reconciledItems.push({
+            ...clientItem,
+            lastModified: clientModified,
+          });
         }
       }
 
-      // Recalculate total items and price
-      const totalItems = reconciledItems.reduce((sum, item) => sum + item.quantity, 0);
-      const totalPrice = reconciledItems.reduce(
-        (sum, item) => sum + item.quantity * item.apparel.apparel_price,
+      serverCart.items = reconciledItems;
+      serverCart.total_items = reconciledItems.reduce(
+        (sum, item) => sum + item.quantity,
         0
       );
-
-      serverCart.items = reconciledItems;
-      serverCart.total_items = totalItems;
-      serverCart.total_price = totalPrice;
+      serverCart.total_price = reconciledItems.reduce(
+        (sum, item) => sum + item.quantity * (item.apparel.apparel_price || 0),
+        0
+      );
+      serverCart.version = clientCart.version + 1;
     }
 
     await serverCart.save();
+    await serverCart
+      .populate({
+        path: "items.apparel",
+        populate: { path: "apparel_images" },
+      })
+      .populate("items.selected_sizes")
+      .populate("items.selected_materials")
+      .populate("items.selected_colors");
+
     res.status(200).json(serverCart);
   } catch (error) {
-    console.error('Cart synchronization failed:', error);
-    res.status(500).json({ error: 'Failed to synchronize cart' });
+    res.status(500).json({ error: "Failed to synchronize cart" });
   }
 };
-
 
 module.exports = {
   syncCart,
@@ -241,5 +354,5 @@ module.exports = {
   addItemToCart,
   removeItemFromCart,
   removeItemsFromCart,
-  updateItemQuantity
+  updateItemQuantity,
 };
