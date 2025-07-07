@@ -1,19 +1,24 @@
-// responseFormatter.js
 const responseFormatter = (req, res, next) => {
-    // Overwrite the res.json method
-    const oldJson = res.json;
+  // Store the original res.json method
+  const originalJson = res.json;
 
-    res.json = (data) => {
-        const formattedResponse = {
-            status: res.statusCode < 400 ? 'success' : 'error',
-            message: res.statusMessage || (res.statusCode < 400 ? 'Request was successful' : 'There was an error'),
-            data: data
-        };
+  // Wrap res.json to format responses
+  res.json = function (data, customMessage) {
+    const statusCode = res.statusCode || 200;
+    const isSuccess = statusCode < 400;
 
-        oldJson.call(res, formattedResponse);
+    const formattedResponse = {
+      status: isSuccess ? "success" : "error",
+      message:
+        customMessage ||
+        (isSuccess ? "Request successful" : "An error occurred"),
+      data: data || {},
     };
 
-    next();
+    return originalJson.call(res, formattedResponse);
+  };
+
+  next();
 };
 
 module.exports = responseFormatter;

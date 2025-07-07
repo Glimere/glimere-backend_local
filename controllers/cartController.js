@@ -27,7 +27,7 @@ const getCart = async (req, res) => {
       await cart.save();
     }
 
-    res.status(200).json({ status: "success", data: cart });
+    res.status(200).json(cart);
   } catch (error) {
     res
       .status(500)
@@ -123,7 +123,7 @@ const addItemToCart = async (req, res) => {
       .populate("items.selected_materials")
       .populate("items.selected_colors");
 
-    res.status(200).json({ status: "success", data: cart });
+    res.status(200).json(cart);
   } catch (error) {
     res
       .status(500)
@@ -236,7 +236,7 @@ const syncCart = async (req, res) => {
       .populate("items.selected_materials")
       .populate("items.selected_colors");
 
-    res.status(200).json({ status: "success", data: serverCart });
+    res.status(200).json(serverCart);
   } catch (error) {
     res
       .status(500)
