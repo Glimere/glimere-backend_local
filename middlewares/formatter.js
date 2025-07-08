@@ -2,17 +2,19 @@ const responseFormatter = (req, res, next) => {
   const originalJson = res.json;
 
   res.json = function (data, customMessage) {
-    // Check if the response is already formatted with status, message, and data
-    const isFormatted =
+    // Check if the response is already fully formatted
+    const isFullyFormatted =
       data &&
       typeof data === "object" &&
       !Array.isArray(data) && // Exclude arrays
-      "status" in data &&
-      "message" in data &&
+      data.status &&
+      typeof data.status === "string" &&
+      data.message &&
+      typeof data.message === "string" &&
       "data" in data;
 
-    if (isFormatted) {
-      // If already formatted, return it as-is
+    if (isFullyFormatted) {
+      // Return fully formatted response unchanged
       return originalJson.call(res, data);
     }
 
@@ -20,29 +22,35 @@ const responseFormatter = (req, res, next) => {
     const statusCode = res.statusCode || 200;
     const isSuccess = statusCode < 400;
 
-    // Handle cases where data is an error object, array, or plain object
+    // Initialize response fields
+    let status = isSuccess ? "success" : "error";
     let message =
       customMessage || (isSuccess ? "Request successful" : "An error occurred");
     let responseData = data;
 
-    // If data contains a message (e.g., error response), use it
-    if (
-      data &&
-      typeof data === "object" &&
-      "message" in data &&
-      typeof data.message === "string"
-    ) {
-      message = data.message;
-      responseData = data.data || (Array.isArray(data) ? data : {});
-    }
-
-    // For arrays (e.g., getMaterials), use directly as data if no message is provided
-    if (Array.isArray(data)) {
+    // Handle partially formatted responses or other cases
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      // Use provided status if valid, otherwise default
+      status =
+        data.status && typeof data.status === "string" ? data.status : status;
+      // Use provided message if valid, otherwise default
+      message =
+        data.message && typeof data.message === "string"
+          ? data.message
+          : message;
+      // Use provided data if present, otherwise extract or default
+      responseData = "data" in data ? data.data : data;
+    } else if (Array.isArray(data)) {
+      // If data is an array (e.g., from getMaterials), use it directly as responseData
       responseData = data;
+    } else if (typeof data === "string") {
+      // If data is a string, treat it as the message
+      message = data;
+      responseData = {};
     }
 
     const formattedResponse = {
-      status: isSuccess ? "success" : "error",
+      status,
       message,
       data: responseData,
     };
