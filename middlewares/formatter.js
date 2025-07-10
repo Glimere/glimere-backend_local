@@ -6,7 +6,7 @@ const responseFormatter = (req, res, next) => {
     const isFullyFormatted =
       data &&
       typeof data === "object" &&
-      !Array.isArray(data) && // Exclude arrays
+      !Array.isArray(data) &&
       data.status &&
       typeof data.status === "string" &&
       data.message &&
@@ -27,6 +27,7 @@ const responseFormatter = (req, res, next) => {
     let message =
       customMessage || (isSuccess ? "Request successful" : "An error occurred");
     let responseData = data;
+    let pagination = null;
 
     // Handle partially formatted responses or other cases
     if (data && typeof data === "object" && !Array.isArray(data)) {
@@ -38,10 +39,12 @@ const responseFormatter = (req, res, next) => {
         data.message && typeof data.message === "string"
           ? data.message
           : message;
+      // Extract pagination if present
+      pagination = data.pagination || null;
       // Use provided data if present, otherwise extract or default
       responseData = "data" in data ? data.data : data;
     } else if (Array.isArray(data)) {
-      // If data is an array (e.g., from getMaterials), use it directly as responseData
+      // If data is an array, use it directly as responseData
       responseData = data;
     } else if (typeof data === "string") {
       // If data is a string, treat it as the message
@@ -49,11 +52,17 @@ const responseFormatter = (req, res, next) => {
       responseData = {};
     }
 
+    // Construct the formatted response
     const formattedResponse = {
       status,
       message,
       data: responseData,
     };
+
+    // Add pagination if it exists
+    if (pagination) {
+      formattedResponse.pagination = pagination;
+    }
 
     return originalJson.call(res, formattedResponse);
   };

@@ -467,36 +467,64 @@ const searchApparels = async (req, res) => {
       priceMin = 0,
       priceMax = Number.MAX_VALUE,
       apparelClass,
+      page = 1,
+      limit = 10, // Default to 10 items per page
     } = req.query;
 
     // Initialize filters
     const filters = {
-      average_rating: { $gte: parseFloat(ratingMin), $lte: parseFloat(ratingMax) },
+      average_rating: {
+        $gte: parseFloat(ratingMin),
+        $lte: parseFloat(ratingMax),
+      },
       apparel_price: { $gte: parseFloat(priceMin), $lte: parseFloat(priceMax) },
     };
 
-    // Add filters dynamically
-    if (searchTerm) filters.apparel_name = { $regex: searchTerm, $options: "i" };
+    // Add search term filter for both apparel_name and description
+    if (searchTerm) {
+      filters.$or = [
+        { apparel_name: { $regex: searchTerm, $options: "i" } },
+        { description: { $regex: searchTerm, $options: "i" } },
+      ];
+    }
+
+    // Add other filters dynamically
     if (apparelType) filters.apparel_type = apparelType;
     if (brand) filters.brand = brand;
     if (apparelClass) filters.apparel_class = apparelClass;
     if (mainCategory) filters.main_category = mainCategory;
     if (subCategory) filters.sub_categories = subCategory;
     if (subSubCategory) filters.sub_subcategories = subSubCategory;
-    if (materials) filters.materials = { $in: materials.split(",") }; // Match any material in the list
+    if (materials) filters.materials = { $in: materials.split(",") };
     if (sizingType) filters["sizes.sizing_type"] = sizingType;
     if (sizes) {
       const sizeIds = sizes.split(",");
-      filters.$or = [
-        { "sizes.male": { $elemMatch: { _id: { $in: sizeIds } } } },
-        { "sizes.female": { $elemMatch: { _id: { $in: sizeIds } } } },
-      ];
+      filters.$or = filters.$or
+        ? [
+            ...filters.$or,
+            { "sizes.male": { $elemMatch: { _id: { $in: sizeIds } } } },
+            { "sizes.female": { $elemMatch: { _id: { $in: sizeIds } } } },
+          ]
+        : [
+            { "sizes.male": { $elemMatch: { _id: { $in: sizeIds } } } },
+            { "sizes.female": { $elemMatch: { _id: { $in: sizeIds } } } },
+          ];
     }
     if (isFeatured !== undefined) filters.is_featured = isFeatured === "true";
 
-    // Query the database with the filters
+    // Calculate pagination parameters
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Query total count for pagination metadata
+    const totalItems = await Apparel.countDocuments(filters);
+
+    // Query the database with pagination
     const apparels = await Apparel.find(filters)
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum)
       .populate("brand")
       .populate("main_category")
       .populate("sub_categories")
@@ -505,10 +533,25 @@ const searchApparels = async (req, res) => {
       .populate("sizes");
 
     if (!apparels.length) {
-      return res.status(404).json({ message: "No apparels found matching the criteria" });
+      return res
+        .status(404)
+        .json({ message: "No apparels found matching the criteria" });
     }
 
-    res.status(200).json(apparels);
+    // Prepare pagination metadata
+    const totalPages = Math.ceil(totalItems / limitNum);
+    const pagination = {
+      currentPage: pageNum,
+      totalPages,
+      totalItems,
+      limit: limitNum,
+    };
+
+    // Return paginated response
+    res.status(200).json({
+      data: apparels,
+      pagination,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
