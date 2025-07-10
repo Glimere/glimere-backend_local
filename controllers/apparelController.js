@@ -527,6 +527,7 @@ const searchApparels = async (req, res) => {
       .limit(limitNum)
       .populate("brand")
       .populate("main_category")
+      .populate("apparel_images")
       .populate("sub_categories")
       .populate("sub_subcategories")
       .populate("materials")
